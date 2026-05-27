@@ -538,44 +538,6 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);font-weight:
         <button class="btn btn-ghost btn-sm" onclick="loadAndMerge()">↓ Load from Drive</button>
         <span id="ghTestResult" class="text-xs text-mono"></span>
       </div>
-      <div style="margin-top:14px">
-        <div class="section-title" style="margin-bottom:8px;font-size:12px">GAS Code — paste this into script.google.com</div>
-        <pre style="background:var(--bg);border:1px solid var(--border);border-radius:var(--radius-sm);padding:14px;font-size:11px;font-family:var(--mono);color:var(--text2);overflow-x:auto;line-height:1.7;white-space:pre-wrap">const FILE_NAME = 'trips_backup.json';
-
-function doGet(e) {
-  const action = e?.parameter?.action || 'load';
-  if (action === 'ping') return json({ status: 'ok' });
-  if (action === 'load') {
-    const file = findFile();
-    if (!file) return json({ status: 'ok', data: null });
-    return json({ status: 'ok', data: JSON.parse(file.getBlob().getDataAsString()) });
-  }
-  return json({ status: 'error', error: 'Unknown action' });
-}
-
-function doPost(e) {
-  try {
-    const payload = JSON.parse(e.postData.contents);
-    if (payload.action === 'save') {
-      const content = JSON.stringify(payload.data, null, 2);
-      let file = findFile();
-      if (file) file.setContent(content);
-      else DriveApp.createFile(FILE_NAME, content, MimeType.PLAIN_TEXT);
-      return json({ status: 'ok' });
-    }
-  } catch(err) { return json({ status: 'error', error: err.message }); }
-}
-
-function findFile() {
-  const files = DriveApp.getFilesByName(FILE_NAME);
-  return files.hasNext() ? files.next() : null;
-}
-
-function json(obj) {
-  return ContentService.createTextOutput(JSON.stringify(obj))
-    .setMimeType(ContentService.MimeType.JSON);
-}</pre>
-      </div>
       <div class="divider"></div>
       <div class="section-title" style="margin-bottom:6px">AI Features</div>
       <div style="background:var(--green-dim);border:1px solid var(--green);border-radius:var(--radius-sm);padding:12px 14px;margin-bottom:10px;font-size:12px;line-height:1.7;color:var(--text2)">
@@ -776,7 +738,7 @@ function json(obj) {
 // ═══════════════════════════════════════════════════════
 //  CONFIG — fill in your keys here, nothing else to change
 // ═══════════════════════════════════════════════════════
-const OR_API_KEY  = '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';  // sk-or-v1-...
+const OR_API_KEY  = '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';  // sk-or-v1-...
 // GAS_URL: paste your deployed Google Apps Script Web App URL below
 const GAS_URL = 'https://script.google.com/macros/s/AKfycbzJ0shYahvEAUwADK_2Q86SVEOdAlqJhMpirmzlyQstp-Jlckz2ag5fVGE4RZwSnGsMjA/exec';
 
