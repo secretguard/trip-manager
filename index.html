@@ -729,18 +729,21 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);font-weight:
 
 <script>
 // ═══════════════════════════════════════════════════════
+//  CONFIG — fill in your keys here, nothing else to change
+// ═══════════════════════════════════════════════════════
+const OR_API_KEY  = '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';  // sk-or-v1-...
+const GH_DEFAULT  = {
+  user:  'secretguard',  // your GitHub username
+  repo:  'trip-manager',
+  token: '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'  // ghp_xxxxxxxxxxxx
+};
+
+// ═══════════════════════════════════════════════════════
 //  DATA LAYER
 // ═══════════════════════════════════════════════════════
 const STORAGE_KEY = 'tripmanager_v2';
 const GH_KEY = 'tripmanager_gh';
 const RATES_KEY = 'tripmanager_rates';
-
-// ── Hardcoded GitHub config — no settings input needed ──
-const GH_DEFAULT = {
-  user:  'secretguard',   // e.g. 'sarathg'
-  repo:  'trip-manager',
-  token: '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'   // ghp_xxxxxxxxxxxx
-};
 
 function loadData() {
   const raw = localStorage.getItem(STORAGE_KEY);
@@ -2033,9 +2036,6 @@ function loadORKey() {
 function saveORKey(k) { localStorage.setItem(OR_KEY, k); }
 
 // Free models to try in order — all work on OpenRouter free tier
-// ── Paste your OpenRouter key here once — no other setup needed ──
-const OR_API_KEY = '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';
-
 // openrouter/free auto-picks the best available free model every time,
 // so slugs never go stale. Specific models are fallbacks only.
 const FREE_MODELS = [
