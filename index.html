@@ -30,8 +30,8 @@
   --blue-dim: rgba(91,156,246,0.1);
   --teal: #40c9a2;
   --teal-dim: rgba(64,201,162,0.1);
-  --radius: 8px;
-  --radius-sm: 5px;
+  --radius: 10px;
+  --radius-sm: 6px;
   --mono: 'Roboto Mono', monospace;
   --sans: 'Roboto', sans-serif;
   --display: 'Roboto Slab', serif;
@@ -41,9 +41,9 @@ html{font-size:14.5px;-webkit-font-smoothing:antialiased}
 body{background:var(--bg);color:var(--text);font-family:var(--sans);font-weight:400;letter-spacing:0.01em;min-height:100vh;display:flex}
 
 /* ── Sidebar ── */
-#sidebar{width:220px;flex-shrink:0;background:var(--bg2);border-right:1px solid var(--border);display:flex;flex-direction:column;position:fixed;top:0;left:0;height:100vh;z-index:100;transition:transform 0.25s}
+#sidebar{width:220px;flex-shrink:0;background:var(--bg2);border-right:1px solid var(--border);display:flex;flex-direction:column;position:fixed;top:0;left:0;height:100vh;z-index:100}
 .sidebar-logo{padding:24px 20px 16px;border-bottom:1px solid var(--border)}
-.sidebar-logo h1{font-family:var(--display);font-size:17px;font-weight:500;color:var(--text);letter-spacing:0px}
+.sidebar-logo h1{font-family:var(--display);font-size:17px;font-weight:700;color:var(--text);letter-spacing:-0.3px}
 .sidebar-logo p{font-size:11px;color:var(--text3);font-family:var(--mono);margin-top:3px}
 .sidebar-nav{flex:1;padding:12px 10px;overflow-y:auto}
 .nav-section{font-size:10px;font-weight:500;color:var(--text3);font-family:var(--mono);letter-spacing:0.08em;padding:14px 10px 6px;text-transform:uppercase}
@@ -56,13 +56,10 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);font-weight:
 .settings-btn{display:flex;align-items:center;gap:8px;padding:8px 10px;border-radius:var(--radius-sm);cursor:pointer;font-size:12px;color:var(--text3);background:none;border:1px solid var(--border);width:100%;transition:all 0.15s}
 .settings-btn:hover{border-color:var(--border2);color:var(--text2)}
 
-/* ── Hamburger ── */
-#hamburger{display:none;position:fixed;top:14px;left:14px;z-index:200;background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:8px 10px;cursor:pointer;color:var(--text2)}
-
 /* ── Main ── */
 #main{margin-left:220px;flex:1;min-height:100vh;display:flex;flex-direction:column}
 .topbar{padding:18px 28px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;background:var(--bg);position:sticky;top:0;z-index:50}
-.topbar-title{font-family:var(--display);font-size:17px;font-weight:400;color:var(--text)}
+.topbar-title{font-family:var(--display);font-size:18px;font-weight:600;color:var(--text)}
 .topbar-actions{display:flex;gap:8px;align-items:center}
 .page{padding:28px;display:none;animation:fadeIn 0.2s ease}
 .page.active{display:block}
@@ -73,7 +70,6 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);font-weight:
 .btn-primary{background:var(--accent);color:#fff}.btn-primary:hover{background:var(--accent2)}
 .btn-ghost{background:none;color:var(--text2);border:1px solid var(--border)}.btn-ghost:hover{border-color:var(--border2);color:var(--text)}
 .btn-danger{background:var(--red-dim);color:var(--red);border:1px solid transparent}.btn-danger:hover{border-color:var(--red)}
-.btn-success{background:var(--green-dim);color:var(--green);border:1px solid transparent}.btn-success:hover{border-color:var(--green)}
 .btn-sm{padding:5px 11px;font-size:12px}
 
 /* ── Cards & Grid ── */
@@ -84,12 +80,12 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);font-weight:
 .card-sm{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:14px 16px}
 .stat-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:16px 18px}
 .stat-label{font-size:11px;color:var(--text3);font-family:var(--mono);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:6px}
-.stat-value{font-family:var(--display);font-size:24px;font-weight:400;color:var(--text)}
+.stat-value{font-family:var(--display);font-size:26px;font-weight:700;color:var(--text)}
 .stat-sub{font-size:11px;color:var(--text3);margin-top:3px}
 
 /* ── Section headers ── */
 .section-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
-.section-title{font-family:var(--display);font-size:14px;font-weight:400;color:var(--text)}
+.section-title{font-family:var(--display);font-size:15px;font-weight:600;color:var(--text)}
 .section-sub{font-size:12px;color:var(--text3);font-family:var(--mono)}
 
 /* ── Badges ── */
@@ -112,10 +108,10 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);font-weight:
 .form-row-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px}
 .form-section{margin-bottom:24px;padding-bottom:24px;border-bottom:1px solid var(--border)}
 .form-section:last-child{border-bottom:none;margin-bottom:0}
-.form-section-title{font-family:var(--display);font-size:13px;font-weight:400;color:var(--text);margin-bottom:14px;display:flex;align-items:center;gap:8px}
+.form-section-title{font-family:var(--display);font-size:14px;font-weight:600;color:var(--text);margin-bottom:14px;display:flex;align-items:center;gap:8px}
 
 /* ── Tabs ── */
-.tabs{display:flex;gap:2px;background:var(--bg3);border-radius:var(--radius-sm);padding:3px;margin-bottom:20px;border:1px solid var(--border);flex-wrap:wrap}
+.tabs{display:flex;gap:2px;background:var(--bg3);border-radius:var(--radius-sm);padding:3px;margin-bottom:20px;border:1px solid var(--border)}
 .tab{flex:1;padding:7px 12px;border-radius:5px;font-size:12.5px;font-weight:500;cursor:pointer;text-align:center;color:var(--text3);transition:all 0.15s;border:none;background:none;font-family:var(--sans)}
 .tab.active{background:var(--bg);color:var(--text);box-shadow:0 1px 3px rgba(0,0,0,0.3)}
 
@@ -124,7 +120,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);font-weight:
 .trip-card:hover{border-color:var(--border2);background:var(--bg3)}
 .trip-card.upcoming{border-color:var(--accent);border-left:3px solid var(--accent)}
 .trip-card.active-trip{border-color:var(--green);border-left:3px solid var(--green)}
-.trip-dest{font-family:var(--display);font-size:17px;font-weight:400;color:var(--text)}
+.trip-dest{font-family:var(--display);font-size:18px;font-weight:700;color:var(--text)}
 .trip-dates{font-size:12px;color:var(--text3);font-family:var(--mono);margin-top:4px}
 .trip-meta{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap}
 .trip-flag{font-size:20px;position:absolute;top:16px;right:18px;opacity:0.6}
@@ -134,7 +130,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);font-weight:
 .flight-leg:last-child{border-bottom:none}
 .fl-num{font-family:var(--mono);font-size:12px;color:var(--text3);width:70px;flex-shrink:0}
 .fl-route{display:flex;align-items:center;gap:8px;flex:1}
-.fl-airport{font-family:var(--display);font-size:14px;font-weight:400;color:var(--text)}
+.fl-airport{font-family:var(--display);font-size:15px;font-weight:700;color:var(--text)}
 .fl-arrow{color:var(--text3);font-size:12px}
 .fl-times{text-align:right}
 .fl-time-ist{font-family:var(--mono);font-size:12px;color:var(--text)}
@@ -153,20 +149,6 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);font-weight:
 .exp-desc{flex:1;font-size:13px;color:var(--text)}
 .exp-amt{font-family:var(--mono);font-size:13px;font-weight:500}
 .exp-ta{font-size:10px;color:var(--teal);font-family:var(--mono)}
-
-/* ── Currency Converter ── */
-.currency-hero{background:linear-gradient(135deg,var(--accent-dim),var(--teal-dim));border:1px solid var(--accent);border-radius:var(--radius);padding:24px;margin-bottom:20px;text-align:center}
-.currency-big{font-family:var(--display);font-size:44px;font-weight:300;color:var(--accent2);line-height:1}
-.currency-sub{font-size:13px;color:var(--text2);margin-top:6px}
-.currency-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:10px;margin-bottom:16px}
-.currency-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:14px 16px;text-align:center}
-.currency-flag{font-size:24px;margin-bottom:6px}
-.currency-rate{font-family:var(--display);font-size:19px;font-weight:400;color:var(--text)}
-.currency-code{font-size:11px;font-family:var(--mono);color:var(--text3);margin-top:2px}
-.currency-warning{background:var(--amber-dim);border:1px solid var(--amber);border-radius:var(--radius-sm);padding:12px 16px;font-size:13px;color:var(--amber);margin-bottom:16px}
-.converter-input-wrap{display:flex;gap:10px;align-items:center;background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius);padding:14px 16px;margin-bottom:12px}
-.converter-input-wrap input{background:none;border:none;outline:none;font-family:var(--display);font-size:26px;font-weight:300;color:var(--text);width:100%;min-width:0}
-.converter-result{font-family:var(--display);font-size:20px;font-weight:400;color:var(--green);text-align:center;padding:14px;background:var(--green-dim);border-radius:var(--radius-sm);border:1px solid var(--green)}
 
 /* ── Session rows ── */
 .session-row{display:flex;align-items:center;gap:14px;padding:10px 0;border-bottom:1px solid var(--border)}
@@ -189,7 +171,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);font-weight:
 .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:500;display:flex;align-items:flex-start;justify-content:center;padding:40px 20px;overflow-y:auto;backdrop-filter:blur(3px)}
 .modal-overlay.hidden{display:none}
 .modal{background:var(--bg2);border:1px solid var(--border2);border-radius:14px;width:100%;max-width:700px;padding:28px;position:relative}
-.modal-title{font-family:var(--display);font-size:17px;font-weight:400;color:var(--text);margin-bottom:6px}
+.modal-title{font-family:var(--display);font-size:18px;font-weight:700;color:var(--text);margin-bottom:6px}
 .modal-sub{font-size:12px;color:var(--text3);font-family:var(--mono);margin-bottom:24px}
 .modal-close{position:absolute;top:18px;right:18px;background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius-sm);width:30px;height:30px;display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--text2);font-size:16px}
 .modal-close:hover{background:var(--bg4);color:var(--text)}
@@ -199,14 +181,14 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);font-weight:
 .fh-table{width:100%;border-collapse:collapse}
 .fh-table th{font-size:10px;font-family:var(--mono);color:var(--text3);text-transform:uppercase;letter-spacing:0.06em;padding:8px 12px;text-align:left;border-bottom:1px solid var(--border);font-weight:500}
 .fh-table td{padding:9px 12px;font-size:12.5px;border-bottom:1px solid var(--border);color:var(--text2)}
-.fh-table tr:hover td{background:var(--bg3);color:var(--text);cursor:pointer}
+.fh-table tr:hover td{background:var(--bg3);color:var(--text)}
 .fh-table td:first-child{font-family:var(--mono);color:var(--text3);font-size:11px}
-.fh-airport{font-family:var(--display);font-weight:400;font-size:13px;color:var(--text)}
+.fh-airport{font-family:var(--display);font-weight:700;font-size:13px;color:var(--text)}
 
 /* ── Countdown ── */
 .countdown{display:flex;gap:16px;align-items:center}
 .cd-unit{text-align:center}
-.cd-num{font-family:var(--display);font-size:26px;font-weight:400;color:var(--accent);line-height:1}
+.cd-num{font-family:var(--display);font-size:28px;font-weight:800;color:var(--accent);line-height:1}
 .cd-label{font-size:10px;color:var(--text3);font-family:var(--mono);text-transform:uppercase;letter-spacing:0.06em;margin-top:4px}
 .cd-sep{font-family:var(--display);font-size:24px;color:var(--border2);padding-bottom:12px}
 
@@ -219,14 +201,6 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);font-weight:
 .tl-time{font-family:var(--mono);font-size:10px;color:var(--text3);margin-bottom:4px}
 .tl-label{font-size:13px;font-weight:500;color:var(--text)}
 .tl-detail{font-size:11px;color:var(--text3);margin-top:3px}
-
-/* ── Clock widget ── */
-.world-clocks{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:10px;margin-bottom:20px}
-.clock-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:14px 16px;text-align:center}
-.clock-city{font-size:11px;font-family:var(--mono);color:var(--text3);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:6px}
-.clock-time{font-family:var(--display);font-size:22px;font-weight:300;color:var(--text)}
-.clock-date{font-size:10px;color:var(--text3);font-family:var(--mono);margin-top:3px}
-.clock-diff{font-size:10px;color:var(--accent2);font-family:var(--mono);margin-top:2px}
 
 /* ── Settings ── */
 .setting-row{display:flex;align-items:center;justify-content:space-between;padding:14px 0;border-bottom:1px solid var(--border)}
@@ -253,7 +227,6 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);font-weight:
 .text-green{color:var(--green)}
 .text-amber{color:var(--amber)}
 .text-red{color:var(--red)}
-.text-teal{color:var(--teal)}
 .text-accent{color:var(--accent2)}
 .fw-600{font-weight:600}
 
@@ -264,52 +237,26 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);font-weight:
 
 /* ── Responsive ── */
 @media(max-width:900px){
-  #sidebar{transform:translateX(-100%)}
+  #sidebar{transform:translateX(-100%);transition:transform 0.25s}
   #sidebar.open{transform:translateX(0)}
   #main{margin-left:0}
   .grid-2,.grid-3,.grid-4{grid-template-columns:1fr}
   .form-row,.form-row-3{grid-template-columns:1fr}
-  #hamburger{display:flex}
-  .topbar{padding:14px 16px 14px 52px}
-  .page{padding:16px}
-  .currency-big{font-size:32px}
 }
 
 .delete-btn{background:none;border:none;color:var(--text3);cursor:pointer;padding:4px;border-radius:4px;font-size:13px;transition:color 0.15s}
 .delete-btn:hover{color:var(--red)}
 .edit-btn{background:none;border:none;color:var(--text3);cursor:pointer;padding:4px;border-radius:4px;font-size:13px;transition:color 0.15s}
 .edit-btn:hover{color:var(--accent2)}
-.copy-btn{background:none;border:none;color:var(--text3);cursor:pointer;padding:4px 6px;border-radius:4px;font-size:11px;transition:color 0.15s;font-family:var(--mono)}
-.copy-btn:hover{color:var(--teal)}
 .repeating-item{display:flex;align-items:center;gap:8px;margin-bottom:8px}
 .repeating-item .form-input{flex:1}
 .add-more-btn{font-size:12px;color:var(--accent2);background:none;border:1px dashed var(--accent);border-radius:var(--radius-sm);padding:7px 14px;cursor:pointer;width:100%;margin-top:4px;transition:all 0.15s;font-family:var(--sans)}
 .add-more-btn:hover{background:var(--accent-dim)}
 .remove-item-btn{background:none;border:none;color:var(--text3);cursor:pointer;font-size:15px;padding:2px 6px;border-radius:4px}
 .remove-item-btn:hover{color:var(--red)}
-
-/* ── Progress dots ── */
-.progress-dots{display:flex;gap:4px;flex-wrap:wrap;margin-top:8px}
-.prog-dot{width:10px;height:10px;border-radius:50%}
-.prog-dot.done{background:var(--text3)}
-.prog-dot.today{background:var(--green);box-shadow:0 0 6px var(--green)}
-.prog-dot.upcoming{background:var(--accent);opacity:0.5}
-
-/* ── Visa card ── */
-.visa-card{background:linear-gradient(135deg,#1a1a2e,#16213e);border:1px solid var(--border2);border-radius:12px;padding:20px;position:relative;overflow:hidden}
-.visa-card::before{content:'VISA';position:absolute;right:16px;bottom:16px;font-family:var(--display);font-size:32px;font-weight:800;color:rgba(255,255,255,0.05);letter-spacing:-1px}
-
-/* ── Overlay for mobile sidebar ── */
-#sidebarOverlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:90}
-#sidebarOverlay.visible{display:block}
 </style>
 </head>
 <body>
-
-<button id="hamburger" onclick="toggleSidebar()">
-  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
-</button>
-<div id="sidebarOverlay" onclick="toggleSidebar()"></div>
 
 <!-- Sidebar -->
 <nav id="sidebar">
@@ -327,31 +274,18 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);font-weight:
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
       My Trips
     </button>
-    <div class="nav-section">Tools</div>
-    <button class="nav-item" onclick="nav('converter')">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>
-      Currency
-    </button>
-    <button class="nav-item" onclick="nav('worldclock')">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-      World Clock
-    </button>
     <div class="nav-section">Records</div>
     <button class="nav-item" onclick="nav('flights')">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 16v-2l-8-5V3.5c0-.83-.67-1.5-1.5-1.5S10 2.67 10 3.5V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-5.5l8 2.5z"/></svg>
       Flight Log
     </button>
     <button class="nav-item" onclick="nav('da')">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v16"/></svg>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>
       DA & Expenses
     </button>
     <button class="nav-item" onclick="nav('explore')">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/></svg>
-      Places
-    </button>
-    <button class="nav-item" onclick="nav('visas')">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>
-      Visas
+      Places to Explore
     </button>
     <div class="nav-section">Add New</div>
     <button class="nav-item" onclick="openTripForm()">
@@ -420,75 +354,8 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);font-weight:
       <button class="tab" onclick="tripTab('sessions',this)">Sessions</button>
       <button class="tab" onclick="tripTab('da',this)">DA & Expenses</button>
       <button class="tab" onclick="tripTab('places',this)">Places</button>
-      <button class="tab" onclick="tripTab('venue',this)">Venue</button>
     </div>
     <div id="tripDetailContent"></div>
-  </div>
-
-  <!-- CURRENCY PAGE -->
-  <div id="page-converter" class="page">
-    <div class="currency-warning">
-      ⚠️ <strong>Spending trap reminder:</strong> RM 30 = ~₹570 · AED 30 = ~₹680 · NGN 30 = ~₹1.3 · Your mind rounds down — the numbers below show reality.
-    </div>
-    <div style="display:flex;gap:10px;align-items:center;margin-bottom:16px;flex-wrap:wrap">
-      <div style="flex:1;min-width:200px">
-        <label class="form-label">I have (amount in foreign currency)</label>
-        <input type="number" class="form-input" id="convAmount" placeholder="100" oninput="updateConverter()" value="100">
-      </div>
-      <div style="min-width:140px">
-        <label class="form-label">Currency</label>
-        <select class="form-select" id="convFrom" onchange="updateConverter()">
-          <option value="MYR">MYR — Malaysian Ringgit</option>
-          <option value="AED">AED — UAE Dirham</option>
-          <option value="NGN">NGN — Nigerian Naira</option>
-          <option value="THB">THB — Thai Baht</option>
-          <option value="ETB">ETB — Ethiopian Birr</option>
-          <option value="USD">USD — US Dollar</option>
-          <option value="EUR">EUR — Euro</option>
-          <option value="GBP">GBP — British Pound</option>
-        </select>
-      </div>
-    </div>
-    <div class="currency-hero">
-      <div class="currency-big" id="convResult">₹570</div>
-      <div class="currency-sub" id="convDesc">RM 100 = ₹570.00 (approx)</div>
-    </div>
-    <div class="section-title" style="margin-bottom:12px">Live reference rates (1 unit → INR)</div>
-    <div class="currency-grid" id="currencyGrid"></div>
-    <div style="font-size:11px;color:var(--text3);font-family:var(--mono);margin-top:8px" id="rateLastUpdated"></div>
-    <div class="divider"></div>
-    <div class="section-title" style="margin-bottom:12px">Quick mental math cheat sheet</div>
-    <div id="cheatSheet"></div>
-  </div>
-
-  <!-- WORLD CLOCK PAGE -->
-  <div id="page-worldclock" class="page">
-    <div class="section-head"><span class="section-title">World Clock</span><span class="section-sub" id="clockIST"></span></div>
-    <div class="world-clocks" id="worldClocks"></div>
-    <div class="divider"></div>
-    <div class="section-title" style="margin-bottom:12px">Time converter</div>
-    <div class="form-row" style="margin-bottom:14px">
-      <div class="form-group">
-        <label class="form-label">IST time</label>
-        <input type="time" class="form-input" id="tcIST" oninput="convertTime()">
-      </div>
-      <div class="form-group">
-        <label class="form-label">Convert to</label>
-        <select class="form-select" id="tcCity" onchange="convertTime()">
-          <option value="KUL">Kuala Lumpur (MYT)</option>
-          <option value="DXB">Dubai (GST)</option>
-          <option value="BKK">Bangkok (ICT)</option>
-          <option value="LOS">Lagos (WAT)</option>
-          <option value="ADD">Addis Ababa (EAT)</option>
-          <option value="ABV">Abuja (WAT)</option>
-          <option value="LON">London (GMT)</option>
-        </select>
-      </div>
-    </div>
-    <div id="timeConvertResult" class="card" style="display:none;text-align:center;padding:20px"></div>
-    <div class="divider"></div>
-    <div class="section-title" style="margin-bottom:12px">Session time reference</div>
-    <div class="card" id="sessionTimeRef"></div>
   </div>
 
   <!-- FLIGHT LOG PAGE -->
@@ -498,7 +365,6 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);font-weight:
         <div class="section-title">Flight Log</div>
         <div class="section-sub" id="flightLogSub"></div>
       </div>
-      <input type="text" class="form-input" id="flightSearch" placeholder="Search flight / airport..." style="width:200px;font-size:12px" oninput="renderFlightLog()">
     </div>
     <div class="card" style="overflow-x:auto">
       <table class="fh-table" id="flightHistTable"></table>
@@ -515,33 +381,40 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);font-weight:
     <div id="exploreContent"></div>
   </div>
 
-  <!-- VISAS PAGE -->
-  <div id="page-visas" class="page">
-    <div id="visaContent"></div>
-  </div>
-
   <!-- SETTINGS PAGE -->
   <div id="page-settings" class="page">
-    <div class="card" style="max-width:600px">
+    <div class="card" style="max-width:640px">
       <div class="section-title" style="margin-bottom:6px">Google Drive Sync</div>
-      <p class="text-sm text-muted" style="margin-bottom:12px;line-height:1.6">Data is saved to your Google Drive via a Google Apps Script. One-time setup — no tokens, no expiry.</p>
-      <div style="background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius-sm);padding:14px;margin-bottom:14px;font-size:12px;line-height:1.9;color:var(--text2)">
-        <strong style="color:var(--accent2)">Setup (5 min, one time only):</strong><br>
-        1. Go to <strong>script.google.com</strong> → New project → paste the GAS code (see below)<br>
+      <p class="text-sm text-muted" style="margin-bottom:12px;line-height:1.6">Data is saved to your Google Drive via Google Apps Script. No tokens, no expiry.</p>
+      <div style="background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius-sm);padding:14px;margin-bottom:14px;font-size:12px;line-height:2;color:var(--text2)">
+        <strong style="color:var(--accent2)">One-time setup:</strong><br>
+        1. Go to <strong>script.google.com</strong> → New project → paste the GAS code below → Save<br>
         2. Click <strong>Deploy → New deployment → Web app</strong><br>
-        3. Execute as: <strong>Me</strong> · Who has access: <strong>Anyone</strong> → Deploy<br>
-        4. Copy the Web App URL → paste into <code>GAS_URL</code> in your <code>index.html</code> → re-upload<br>
-        5. First time: Google will ask to authorise — click Allow
+        3. Execute as: <strong>Me</strong> · Who has access: <strong>Anyone</strong> → Deploy → Allow<br>
+        4. Copy the Web App URL → paste into <code>GAS_URL</code> in <code>index.html</code> → re-upload to GitHub
       </div>
-      <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+      <div style="background:var(--green-dim);border:1px solid var(--green);border-radius:var(--radius-sm);padding:10px 14px;margin-bottom:14px;font-size:12px;color:var(--text2)">
+        <strong style="color:var(--green)">Status:</strong> <span id="ghRepoDisplay"></span>
+      </div>
+      <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:16px">
         <button class="btn btn-ghost btn-sm" onclick="testGHConnection()">Test connection</button>
         <button class="btn btn-ghost btn-sm" onclick="loadAndMerge()">↓ Load from Drive</button>
         <span id="ghTestResult" class="text-xs text-mono"></span>
       </div>
-      <div style="margin-top:14px">
-        <div class="section-title" style="margin-bottom:8px;font-size:12px">GAS Code — paste this into script.google.com</div>
-        <pre style="background:var(--bg);border:1px solid var(--border);border-radius:var(--radius-sm);padding:14px;font-size:11px;font-family:var(--mono);color:var(--text2);overflow-x:auto;line-height:1.7;white-space:pre-wrap">const FILE_NAME = 'trips_backup.json';
+      <div class="section-title" style="margin-bottom:8px;font-size:12px">GAS Script — paste into script.google.com</div>
+      <pre style="background:var(--bg);border:1px solid var(--border);border-radius:var(--radius-sm);padding:14px;font-size:11px;font-family:var(--mono);color:var(--text2);overflow-x:auto;line-height:1.7;white-space:pre-wrap;margin-bottom:20px">const FILE_NAME = 'trips_backup.json';
+const FOLDER_NAME = 'Trip Manager';
 
+function getFolder() {
+  const folders = DriveApp.getFoldersByName(FOLDER_NAME);
+  if (folders.hasNext()) return folders.next();
+  return DriveApp.createFolder(FOLDER_NAME);
+}
+function findFile() {
+  const folder = getFolder();
+  const files = folder.getFilesByName(FILE_NAME);
+  return files.hasNext() ? files.next() : null;
+}
 function doGet(e) {
   const action = e?.parameter?.action || 'load';
   if (action === 'ping') return json({ status: 'ok' });
@@ -552,36 +425,27 @@ function doGet(e) {
   }
   return json({ status: 'error', error: 'Unknown action' });
 }
-
 function doPost(e) {
   try {
     const payload = JSON.parse(e.postData.contents);
     if (payload.action === 'save') {
-      const content = JSON.stringify(payload.data, null, 2);
-      let file = findFile();
-      if (file) file.setContent(content);
-      else DriveApp.createFile(FILE_NAME, content, MimeType.PLAIN_TEXT);
+      const c = JSON.stringify(payload.data, null, 2);
+      const f = findFile();
+      if (f) f.setContent(c);
+      else getFolder().createFile(FILE_NAME, c, MimeType.PLAIN_TEXT);
       return json({ status: 'ok' });
     }
   } catch(err) { return json({ status: 'error', error: err.message }); }
 }
-
-function findFile() {
-  const files = DriveApp.getFilesByName(FILE_NAME);
-  return files.hasNext() ? files.next() : null;
-}
-
 function json(obj) {
-  return ContentService.createTextOutput(JSON.stringify(obj))
-    .setMimeType(ContentService.MimeType.JSON);
+  return ContentService.createTextOutput(JSON.stringify(obj)).setMimeType(ContentService.MimeType.JSON);
 }</pre>
-      </div>
       <div class="divider"></div>
       <div class="section-title" style="margin-bottom:6px">AI Features</div>
-      <div style="background:var(--green-dim);border:1px solid var(--green);border-radius:var(--radius-sm);padding:12px 14px;margin-bottom:10px;font-size:12px;line-height:1.7;color:var(--text2)">
-        <strong style="color:var(--green)">✓ AI is active</strong> — powered by OpenRouter free tier. Flight lookups and place suggestions for any new city work automatically. KL, Dubai, Bangkok, Lagos, Abuja, Addis, Delhi, Bangalore, Gurgaon also have instant offline suggestions.
+      <div style="background:var(--green-dim);border:1px solid var(--green);border-radius:var(--radius-sm);padding:10px 14px;margin-bottom:10px;font-size:12px;line-height:1.7;color:var(--text2)">
+        <strong style="color:var(--green)">✓ AI active</strong> — OpenRouter free tier. KL, Dubai, Bangkok, Lagos, Abuja, Addis, Delhi, Bangalore, Gurgaon have instant offline suggestions.
       </div>
-      <div style="margin-top:4px;display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+      <div style="display:flex;gap:8px;align-items:center;margin-bottom:20px">
         <button class="btn btn-ghost btn-sm" onclick="testGemini()">Test AI connection</button>
         <span id="geminiTestResult" class="text-xs text-mono"></span>
       </div>
@@ -594,37 +458,28 @@ function json(obj) {
       </div>
     </div>
   </div>
-</main>
-
-<!-- ═══════════════════════════════════════════════════════ MODALS ═══════════════════════════════════════════════════════ -->
+<!-- ═══════════════════════ MODALS ═══════════════════════ -->
 
 <!-- Trip Form Modal -->
 <div class="modal-overlay hidden" id="tripModal">
   <div class="modal">
     <button class="modal-close" onclick="closeModal('tripModal')">✕</button>
     <div class="modal-title" id="tripModalTitle">New Trip</div>
-    <div class="modal-sub">Fill in the details for this trip</div>
+    <div class="modal-sub">Fill in the details — flights, hotels, sessions and DA can be added after</div>
 
     <div class="form-section">
-      <div class="form-section-title">🌍 Trip Details</div>
+      <div class="form-section-title">🌍 Trip basics</div>
       <div class="form-row">
-        <div class="form-group"><label class="form-label">Trip name</label><input type="text" class="form-input" id="f_name" placeholder="Malaysia Training — May 2026"></div>
-        <div class="form-group"><label class="form-label">Type</label>
-          <select class="form-select" id="f_type">
-            <option value="training">Training / ILT</option>
-            <option value="conference">Conference</option>
-            <option value="internal">Internal</option>
-            <option value="other">Other</option>
-          </select>
-        </div>
+        <div class="form-group"><label class="form-label">Trip name / purpose</label><input type="text" class="form-input" id="f_name" placeholder="Malaysia Training — Jun 2026"></div>
+        <div class="form-group"><label class="form-label">Destination city</label><input type="text" class="form-input" id="f_city" placeholder="Kuala Lumpur"></div>
       </div>
-      <div class="form-row-3">
-        <div class="form-group"><label class="form-label">City</label><input type="text" class="form-input" id="f_city" placeholder="Kuala Lumpur"></div>
+      <div class="form-row">
         <div class="form-group"><label class="form-label">Country</label><input type="text" class="form-input" id="f_country" placeholder="Malaysia"></div>
-        <div class="form-group"><label class="form-label">Currency</label>
-          <select class="form-select" id="f_currency">
-            <option value="MYR">MYR</option><option value="USD">USD</option><option value="AED">AED</option>
-            <option value="NGN">NGN</option><option value="THB">THB</option><option value="ETB">ETB</option><option value="INR">INR</option>
+        <div class="form-group"><label class="form-label">Trip type</label>
+          <select class="form-select" id="f_type">
+            <option value="training">Training / Teaching</option>
+            <option value="business">Business</option>
+            <option value="personal">Personal</option>
           </select>
         </div>
       </div>
@@ -632,7 +487,7 @@ function json(obj) {
         <div class="form-group"><label class="form-label">Start date</label><input type="date" class="form-input" id="f_start"></div>
         <div class="form-group"><label class="form-label">End date</label><input type="date" class="form-input" id="f_end"></div>
       </div>
-      <div class="form-group"><label class="form-label">Notes</label><textarea class="form-textarea" id="f_notes" placeholder="Any notes..."></textarea></div>
+      <div class="form-group"><label class="form-label">Notes</label><textarea class="form-textarea" id="f_notes" placeholder="Any important notes..."></textarea></div>
     </div>
 
     <div class="form-section">
@@ -648,36 +503,19 @@ function json(obj) {
     </div>
 
     <div class="form-section">
-      <div class="form-section-title">📚 Sessions / Training</div>
-      <div class="form-row">
-        <div class="form-group"><label class="form-label">Course ID</label><input type="text" class="form-input" id="f_courseId" placeholder="259654"></div>
-        <div class="form-group"><label class="form-label">Trainer name</label><input type="text" class="form-input" id="f_trainer" placeholder="Sarath G"></div>
+      <div class="form-section-title">📅 Work sessions</div>
+      <div class="form-row" style="margin-bottom:10px">
+        <div class="form-group"><label class="form-label">Course / Session ID</label><input type="text" class="form-input" id="f_courseId" placeholder="259654"></div>
+        <div class="form-group"><label class="form-label">Trainer</label><input type="text" class="form-input" id="f_trainer" placeholder="Sarath G"></div>
       </div>
-      <div class="form-row-3">
-        <div class="form-group"><label class="form-label">Participants (pax)</label><input type="number" class="form-input" id="f_pax" placeholder="3"></div>
-        <div class="form-group"><label class="form-label">Mode</label>
-          <select class="form-select" id="f_mode"><option value="ILT">ILT</option><option value="Virtual">Virtual</option><option value="Hybrid">Hybrid</option></select>
-        </div>
-        <div class="form-group"><label class="form-label">Recording</label>
-          <select class="form-select" id="f_recording"><option value="yes">Mandatory</option><option value="no">Not required</option></select>
-        </div>
+      <div class="form-row-3" style="margin-bottom:10px">
+        <div class="form-group"><label class="form-label"># of participants</label><input type="number" class="form-input" id="f_pax" placeholder="3"></div>
+        <div class="form-group"><label class="form-label">Mode</label><select class="form-select" id="f_mode"><option value="ILT">ILT (In-person)</option><option value="Virtual">Virtual</option><option value="Hybrid">Hybrid</option></select></div>
+        <div class="form-group"><label class="form-label">Recording</label><select class="form-select" id="f_recording"><option value="yes">Mandatory</option><option value="no">Not required</option></select></div>
       </div>
-      <div class="form-group"><label class="form-label">Venue name & address</label><input type="text" class="form-input" id="f_venue" placeholder="Spaces Platinum Sentral, KL"></div>
+      <div class="form-group"><label class="form-label">Venue name & address</label><input type="text" class="form-input" id="f_venue" placeholder="Spaces Platinum Sentral, Block D, Jalan Stesen Sentral 2, KL"></div>
       <div id="sessionDatesForm" style="margin-top:10px"></div>
       <button class="add-more-btn" onclick="addSessionDate()">+ Add session date</button>
-    </div>
-
-    <div class="form-section">
-      <div class="form-section-title">🛡 Insurance</div>
-      <div class="form-row">
-        <div class="form-group"><label class="form-label">Provider</label><input type="text" class="form-input" id="f_insProvider" placeholder="ICICI Lombard"></div>
-        <div class="form-group"><label class="form-label">Policy No.</label><input type="text" class="form-input" id="f_insPolicyNo" placeholder="4168/..."></div>
-      </div>
-      <div class="form-row">
-        <div class="form-group"><label class="form-label">Valid from</label><input type="date" class="form-input" id="f_insFrom"></div>
-        <div class="form-group"><label class="form-label">Valid to</label><input type="date" class="form-input" id="f_insTo"></div>
-      </div>
-      <div class="form-group"><label class="form-label">Helpline number</label><input type="text" class="form-input" id="f_insHelpline" placeholder="+91 124 449 8778"></div>
     </div>
 
     <div class="form-section">
@@ -686,13 +524,7 @@ function json(obj) {
         <div class="form-group"><label class="form-label">Daily allowance (international)</label><input type="number" class="form-input" id="f_daIntl" placeholder="30" step="0.5"><span class="text-xs text-muted" style="margin-top:4px;display:block">USD per day</span></div>
         <div class="form-group"><label class="form-label">Daily allowance (India)</label><input type="number" class="form-input" id="f_daIndia" placeholder="950"><span class="text-xs text-muted" style="margin-top:4px;display:block">INR per day</span></div>
       </div>
-      <div class="form-group"><label class="form-label">TA policy</label>
-        <select class="form-select" id="f_ta">
-          <option value="reimbursed">Reimbursed on bills</option>
-          <option value="fixed">Fixed amount</option>
-          <option value="none">Not applicable</option>
-        </select>
-      </div>
+      <div class="form-group"><label class="form-label">TA policy</label><select class="form-select" id="f_ta"><option value="reimbursed">Reimbursed on bills</option><option value="fixed">Fixed amount</option><option value="none">Not applicable</option></select></div>
     </div>
 
     <div class="modal-footer">
@@ -712,28 +544,26 @@ function json(obj) {
       <div class="form-group"><label class="form-label">Date</label><input type="date" class="form-input" id="exp_date"></div>
       <div class="form-group"><label class="form-label">Category</label>
         <select class="form-select" id="exp_cat">
-          <option value="meals">🍽 Meals / Food</option>
-          <option value="transport">🚗 Transport (TA)</option>
-          <option value="laundry">👕 Laundry</option>
-          <option value="misc">📦 Miscellaneous</option>
-          <option value="accommodation">🏨 Accommodation extra</option>
-          <option value="communication">📱 Phone / Internet</option>
-          <option value="shopping">🛍 Shopping (personal)</option>
+          <option value="meals">Meals / Food</option>
+          <option value="transport">Transport (TA)</option>
+          <option value="laundry">Laundry</option>
+          <option value="misc">Miscellaneous</option>
+          <option value="accommodation">Accommodation extra</option>
+          <option value="communication">Phone / Internet</option>
         </select>
       </div>
     </div>
     <div class="form-group"><label class="form-label">Description</label><input type="text" class="form-input" id="exp_desc" placeholder="Dinner at restaurant / Grab to airport..."></div>
     <div class="form-row">
-      <div class="form-group"><label class="form-label">Amount</label><input type="number" class="form-input" id="exp_amount" step="0.01" placeholder="0.00" oninput="updateExpenseINR()"></div>
+      <div class="form-group"><label class="form-label">Amount</label><input type="number" class="form-input" id="exp_amount" step="0.01" placeholder="0.00"></div>
       <div class="form-group"><label class="form-label">Currency</label>
-        <select class="form-select" id="exp_currency" onchange="updateExpenseINR()">
+        <select class="form-select" id="exp_currency">
           <option value="USD">USD</option><option value="INR">INR</option><option value="MYR">MYR</option>
           <option value="AED">AED</option><option value="THB">THB</option><option value="NGN">NGN</option>
           <option value="ETB">ETB</option><option value="EUR">EUR</option>
         </select>
       </div>
     </div>
-    <div id="expenseINRNote" style="display:none;background:var(--amber-dim);border:1px solid var(--amber);border-radius:var(--radius-sm);padding:10px 14px;font-size:13px;color:var(--amber);margin-bottom:12px;font-family:var(--mono)"></div>
     <div class="form-group">
       <label class="form-label">Reimbursable (TA)?</label>
       <select class="form-select" id="exp_ta">
@@ -774,37 +604,903 @@ function json(obj) {
 
 <script>
 // ═══════════════════════════════════════════════════════
-//  CONFIG — fill in your keys here, nothing else to change
+//  CONFIG
 // ═══════════════════════════════════════════════════════
-const OR_API_KEY  = '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';  // sk-or-v1-...
-// GAS_URL: paste your deployed Google Apps Script Web App URL below
-const GAS_URL = 'https://script.google.com/macros/s/AKfycbzJ0shYahvEAUwADK_2Q86SVEOdAlqJhMpirmzlyQstp-Jlckz2ag5fVGE4RZwSnGsMjA/exec';
+const OR_API_KEY = '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';  // sk-or-v1-...
+const GAS_URL    = 'https://script.google.com/macros/s/AKfycbzJ0shYahvEAUwADK_2Q86SVEOdAlqJhMpirmzlyQstp-Jlckz2ag5fVGE4RZwSnGsMjA/exec'; // https://script.google.com/macros/s/.../exec
 
 // ═══════════════════════════════════════════════════════
 //  DATA LAYER
 // ═══════════════════════════════════════════════════════
-const STORAGE_KEY = 'tripmanager_v2';
-const RATES_KEY = 'tripmanager_rates';
+const STORAGE_KEY = 'tripmanager_v1';
 
 function loadData() {
   const raw = localStorage.getItem(STORAGE_KEY);
   if (raw) return JSON.parse(raw);
   return getDefaultData();
 }
-function saveData(data) { localStorage.setItem(STORAGE_KEY, JSON.stringify(data)); }
-// GH functions removed — using Google Drive via GAS instead
-function loadRates() { const r = localStorage.getItem(RATES_KEY); return r ? JSON.parse(r) : null; }
-function saveRates(obj) { localStorage.setItem(RATES_KEY, JSON.stringify(obj)); }
+
+function saveData(data) {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+}
+
+function loadGH() {
+  const raw = localStorage.getItem(GH_KEY);
+  return raw ? JSON.parse(raw) : { user: '', repo: '', token: '' };
+}
+
+function saveGH(obj) {
+  localStorage.setItem(GH_KEY, JSON.stringify(obj));
+}
 
 let DB = loadData();
 
 // ═══════════════════════════════════════════════════════
-//  DEFAULT DATA — Sarath's full trip history
+//  DEFAULT DATA — pre-loaded with Sarath's history
 // ═══════════════════════════════════════════════════════
 function getDefaultData() {
-  return {
-    trips: [],
-    flightHistory: [],
-    visas: []
-  };
+  return { trips: [], flightHistory: [], visas: [] };
 }
+
+// ═══════════════════════════════════════════════════════
+//  UTILITIES
+// ═══════════════════════════════════════════════════════
+const COUNTRY_FLAGS = { Malaysia:'🇲🇾', Nigeria:'🇳🇬', Ethiopia:'🇪🇹', Thailand:'🇹🇭', UAE:'🇦🇪', India:'🇮🇳', UK:'🇬🇧', USA:'🇺🇸', Germany:'🇩🇪', Singapore:'🇸🇬', Kenya:'🇰🇪' };
+const AIRPORT_TZ = { COK:'Asia/Kolkata', DEL:'Asia/Kolkata', BLR:'Asia/Kolkata', BOM:'Asia/Kolkata', KUL:'Asia/Kuala_Lumpur', DXB:'Asia/Dubai', BKK:'Asia/Bangkok', ADD:'Africa/Addis_Ababa', LOS:'Africa/Lagos', ABV:'Africa/Lagos', BKK:'Asia/Bangkok' };
+const CAT_ICONS = { landmark:'🏛', food:'🍜', nature:'🌿', culture:'🎭', shopping:'🛍', activity:'🎯', meals:'🍽', transport:'🚗', laundry:'👕', misc:'📦', accommodation:'🏨', communication:'📱' };
+
+function fmtDate(d) {
+  if (!d) return '';
+  const dt = new Date(d);
+  return dt.toLocaleDateString('en-GB', { day:'numeric', month:'short', year:'numeric' });
+}
+function fmtDateShort(d) {
+  if (!d) return '';
+  return new Date(d).toLocaleDateString('en-GB', { day:'numeric', month:'short' });
+}
+function daysBetween(a, b) {
+  return Math.ceil((new Date(b) - new Date(a)) / 86400000);
+}
+function today() { return new Date().toISOString().slice(0,10); }
+function getTripStatus(trip) {
+  const t = today();
+  if (trip.end < t) return 'past';
+  if (trip.start <= t && trip.end >= t) return 'active';
+  return 'upcoming';
+}
+function getTripFlag(trip) {
+  return COUNTRY_FLAGS[trip.country] || '🌐';
+}
+function localTime(istTime, toAirport) {
+  const offsets = { 'Asia/Kolkata':330,'Asia/Kuala_Lumpur':480,'Asia/Dubai':240,'Africa/Addis_Ababa':180,'Africa/Lagos':60,'Asia/Bangkok':420 };
+  const tz = AIRPORT_TZ[toAirport];
+  if (!tz) return '';
+  const diff = (offsets[tz] || 0) - 330;
+  const [h, m] = istTime.split(':').map(Number);
+  const total = h * 60 + m + diff;
+  const lh = Math.floor(((total % 1440) + 1440) % 1440 / 60);
+  const lm = ((total % 1440) + 1440) % 1440 % 60;
+  return `${String(lh).padStart(2,'0')}:${String(lm).padStart(2,'0')} local`;
+}
+function getLocalTZLabel(airport) {
+  const labels = { KUL:'MYT (IST+2:30)', DXB:'GST (IST+1:30)', ADD:'EAT (IST−2:30)', LOS:'WAT (IST−4:30)', BKK:'ICT (IST+1:30)', ABV:'WAT (IST−4:30)' };
+  return labels[airport] || '';
+}
+function uid() { return 'id_' + Math.random().toString(36).slice(2,9); }
+
+// DA calculation
+function calcDA(trip) {
+  if (!trip.da || !trip.start || !trip.end) return null;
+  const days = daysBetween(trip.start, trip.end);
+  const rate = trip.da.intlRate || 0;
+  const total = days * rate;
+  const spent = (trip.expenses || []).filter(e => e.ta !== 'yes').reduce((s,e) => s + (parseFloat(e.amount)||0), 0);
+  const ta = (trip.expenses || []).filter(e => e.ta === 'yes').reduce((s,e) => s + (parseFloat(e.amount)||0), 0);
+  const saved = total - spent;
+  return { days, rate, total, spent, ta, saved, currency: trip.da.intlCurrency || 'USD' };
+}
+
+// ═══════════════════════════════════════════════════════
+//  DASHBOARD
+// ═══════════════════════════════════════════════════════
+function renderDashboard() {
+  const trips = DB.trips;
+  const activeTrip = trips.find(t => getTripStatus(t) === 'active');
+  const upcoming = trips.filter(t => getTripStatus(t) === 'upcoming').sort((a,b) => a.start.localeCompare(b.start))[0];
+  const pastCount = trips.filter(t => getTripStatus(t) === 'past').length;
+  const allFlights = DB.flightHistory || [];
+
+  // Banners
+  const cb = document.getElementById('currentTripBanner');
+  if (activeTrip) {
+    cb.style.display = 'block';
+    const da = calcDA(activeTrip);
+    cb.innerHTML = `<div class="flex-between"><div><span class="badge badge-green" style="margin-bottom:8px">● Active now</span><div style="font-family:var(--display);font-size:20px;font-weight:700;margin-bottom:4px">${getTripFlag(activeTrip)} ${activeTrip.city}, ${activeTrip.country}</div><div class="text-sm text-muted text-mono">${fmtDate(activeTrip.start)} → ${fmtDate(activeTrip.end)} · ${daysBetween(activeTrip.start, activeTrip.end)} days</div></div><div style="text-align:right">${da ? `<div class="stat-label">DA balance</div><div style="font-size:22px;font-weight:700;color:${da.saved>=0?'var(--green)':'var(--red)'}">${da.currency} ${da.saved.toFixed(0)}</div><div class="text-xs text-muted">${da.total} total · ${da.spent} spent</div>` : ''}<button class="btn btn-primary btn-sm" style="margin-top:10px" onclick="viewTrip('${activeTrip.id}')">View trip →</button></div></div>`;
+  } else { cb.style.display='none'; }
+
+  const ub = document.getElementById('upcomingBanner');
+  if (!activeTrip && upcoming) {
+    const diff = daysBetween(today(), upcoming.start);
+    const d = Math.floor(diff), h = 0;
+    ub.style.display = 'block';
+    ub.innerHTML = `<div class="flex-between"><div><div class="text-xs text-mono text-muted" style="margin-bottom:6px">Next trip</div><div style="font-family:var(--display);font-size:18px;font-weight:700">${getTripFlag(upcoming)} ${upcoming.city}, ${upcoming.country}</div><div class="text-sm text-muted text-mono">${fmtDate(upcoming.start)} → ${fmtDate(upcoming.end)}</div></div><div style="display:flex;flex-direction:column;align-items:flex-end;gap:10px"><div class="countdown"><div class="cd-unit"><div class="cd-num">${d}</div><div class="cd-label">days</div></div></div><button class="btn btn-ghost btn-sm" onclick="viewTrip('${upcoming.id}')">View trip →</button></div></div>`;
+  } else if (!activeTrip) { ub.style.display='none'; }
+
+  // Stats
+  const countries = [...new Set(DB.trips.map(t => t.country))].length;
+  document.getElementById('statsGrid').innerHTML = `
+    <div class="stat-card"><div class="stat-label">Total trips</div><div class="stat-value">${trips.length}</div><div class="stat-sub">${pastCount} completed</div></div>
+    <div class="stat-card"><div class="stat-label">Countries</div><div class="stat-value">${countries}</div><div class="stat-sub">visited</div></div>
+    <div class="stat-card"><div class="stat-label">Total flights</div><div class="stat-value">${allFlights.length}</div><div class="stat-sub">in log</div></div>
+    <div class="stat-card"><div class="stat-label">Days abroad</div><div class="stat-value">${trips.filter(t=>t.country!=='India').reduce((s,t)=>s+daysBetween(t.start,t.end),0)}</div><div class="stat-sub">total</div></div>
+  `;
+
+  // Recent trips
+  const recent = [...trips].sort((a,b)=>b.start.localeCompare(a.start)).slice(0,4);
+  document.getElementById('recentTrips').innerHTML = recent.map(t => {
+    const status = getTripStatus(t);
+    const badgeCls = status==='active'?'badge-green':status==='upcoming'?'badge-accent':'badge-blue';
+    return `<div class="trip-card ${status==='upcoming'?'upcoming':status==='active'?'active-trip':''}" onclick="viewTrip('${t.id}')">
+      <span class="trip-flag">${getTripFlag(t)}</span>
+      <div class="trip-dest">${t.city}</div>
+      <div class="trip-dates text-mono">${fmtDateShort(t.start)} → ${fmtDateShort(t.end)}</div>
+      <div class="trip-meta"><span class="badge ${badgeCls}">${status}</span><span class="badge badge-blue">${t.type}</span></div>
+    </div>`;
+  }).join('');
+
+  // Recent flights
+  document.getElementById('flightCount').textContent = allFlights.length + ' total';
+  const recent5 = [...allFlights].sort((a,b)=>new Date(b.dep)-new Date(a.dep)).slice(0,6);
+  document.getElementById('recentFlights').innerHTML = `<div class="card" style="padding:8px 16px">${recent5.map(f=>`
+    <div class="flight-leg">
+      <span class="fl-num">${f.num}</span>
+      <div class="fl-route"><span class="fl-airport">${f.from}</span><span class="fl-arrow">→</span><span class="fl-airport">${f.to}</span></div>
+      <div class="fl-times"><div class="fl-time-ist">${f.dep?f.dep.slice(11,16):''}</div><div class="fl-date">${f.dep?fmtDateShort(f.dep.slice(0,10)):''}</div></div>
+    </div>`).join('')}</div>`;
+}
+
+// ═══════════════════════════════════════════════════════
+//  TRIPS LIST
+// ═══════════════════════════════════════════════════════
+let tripFilter = 'all';
+
+function filterTrips(filter, btn) {
+  tripFilter = filter;
+  document.querySelectorAll('#page-trips .tab').forEach(t => t.classList.remove('active'));
+  btn.classList.add('active');
+  renderTrips(filter);
+}
+
+function renderTrips(filter) {
+  let trips = DB.trips;
+  if (filter !== 'all') trips = trips.filter(t => getTripStatus(t) === filter);
+  trips = [...trips].sort((a,b) => b.start.localeCompare(a.start));
+
+  document.getElementById('tripsList').innerHTML = trips.length ? trips.map(t => {
+    const status = getTripStatus(t);
+    const badgeCls = status==='active'?'badge-green':status==='upcoming'?'badge-accent':'badge-blue';
+    const da = calcDA(t);
+    return `<div class="trip-card ${status==='upcoming'?'upcoming':status==='active'?'active-trip':''}" style="display:flex;align-items:center;justify-content:space-between" onclick="viewTrip('${t.id}')">
+      <div style="display:flex;align-items:center;gap:16px">
+        <div style="font-size:28px">${getTripFlag(t)}</div>
+        <div>
+          <div class="trip-dest" style="font-size:16px">${t.name || t.city}</div>
+          <div class="trip-dates">${fmtDate(t.start)} → ${fmtDate(t.end)} · ${daysBetween(t.start,t.end)} days</div>
+          <div class="trip-meta" style="margin-top:8px"><span class="badge ${badgeCls}">${status}</span><span class="badge badge-blue">${t.type}</span><span class="badge badge-teal">${t.country}</span></div>
+        </div>
+      </div>
+      <div style="text-align:right;flex-shrink:0">
+        ${da ? `<div class="text-xs text-muted text-mono">DA</div><div style="font-size:15px;font-weight:600;color:${da.saved>=0?'var(--green)':'var(--red)'}">${da.currency} ${da.total}</div>` : ''}
+        <div class="text-xs text-muted" style="margin-top:4px">${(t.flights||[]).length} flights · ${(t.hotels||[]).length} hotels</div>
+      </div>
+    </div>`;
+  }).join('') : '<div class="card" style="text-align:center;color:var(--text3);padding:40px">No trips found</div>';
+}
+
+// ═══════════════════════════════════════════════════════
+//  TRIP DETAIL
+// ═══════════════════════════════════════════════════════
+let currentTripId = null;
+let currentTripTab = 'overview';
+
+function viewTrip(id) {
+  currentTripId = id;
+  currentTripTab = 'overview';
+  nav('tripDetail');
+  renderTripDetail();
+}
+
+function renderTripDetail() {
+  const trip = DB.trips.find(t => t.id === currentTripId);
+  if (!trip) return;
+  const status = getTripStatus(trip);
+  const badgeCls = status==='active'?'badge-green':status==='upcoming'?'badge-accent':'badge-blue';
+
+  document.getElementById('tripDetailHeader').innerHTML = `
+    <div class="flex-between">
+      <div style="display:flex;align-items:center;gap:16px">
+        <div style="font-size:40px">${getTripFlag(trip)}</div>
+        <div>
+          <div style="font-family:var(--display);font-size:22px;font-weight:800">${trip.name}</div>
+          <div class="text-mono text-muted text-sm">${fmtDate(trip.start)} → ${fmtDate(trip.end)} · ${daysBetween(trip.start,trip.end)} days</div>
+          <div style="margin-top:8px;display:flex;gap:8px"><span class="badge ${badgeCls}">${status}</span><span class="badge badge-teal">${trip.country}</span><span class="badge badge-blue">${trip.type}</span></div>
+        </div>
+      </div>
+      <div style="display:flex;gap:8px">
+        <button class="btn btn-ghost btn-sm" onclick="editTrip('${trip.id}')">Edit</button>
+        <button class="btn btn-danger btn-sm" onclick="deleteTrip('${trip.id}')">Delete</button>
+      </div>
+    </div>`;
+
+  renderTripTab(currentTripTab);
+}
+
+function tripTab(tab, btn) {
+  currentTripTab = tab;
+  document.querySelectorAll('#tripDetailTabs .tab').forEach(t => t.classList.remove('active'));
+  btn.classList.add('active');
+  renderTripTab(tab);
+}
+
+function renderTripTab(tab) {
+  const trip = DB.trips.find(t => t.id === currentTripId);
+  if (!trip) return;
+  const el = document.getElementById('tripDetailContent');
+
+  if (tab === 'overview') {
+    const da = calcDA(trip);
+    const pct = da ? Math.min(100, (da.spent / da.total) * 100) : 0;
+    const fillCls = pct < 70 ? 'safe' : pct < 90 ? 'warn' : 'over';
+    el.innerHTML = `
+      <div class="grid-2">
+        <div>
+          <div class="section-head"><span class="section-title">Quick timeline</span></div>
+          <div class="tl">
+            ${(trip.flights||[]).slice(0,2).map(f=>`<div class="tl-item"><div class="tl-dot" style="background:var(--accent)"></div><div class="tl-content"><div class="tl-time">${fmtDate(f.depDate)} · ${f.depTime}</div><div class="tl-label">${f.num}: ${f.from} → ${f.to}</div></div></div>`).join('')}
+            ${trip.hotels&&trip.hotels[0]?`<div class="tl-item"><div class="tl-dot" style="background:var(--teal)"></div><div class="tl-content"><div class="tl-time">${fmtDate(trip.hotels[0].checkin)}</div><div class="tl-label">Check-in: ${trip.hotels[0].name}</div></div></div>`:''}
+            ${trip.sessions&&trip.sessions.dates?`<div class="tl-item"><div class="tl-dot" style="background:var(--amber)"></div><div class="tl-content"><div class="tl-time">${fmtDate(trip.sessions.dates[0])}</div><div class="tl-label">Sessions start · ${trip.sessions.dates.length} days</div></div></div>`:''}
+            ${(trip.flights||[]).slice(-2).map(f=>`<div class="tl-item"><div class="tl-dot" style="background:var(--green)"></div><div class="tl-content"><div class="tl-time">${fmtDate(f.depDate)} · ${f.depTime}</div><div class="tl-label">${f.num}: ${f.from} → ${f.to}</div></div></div>`).join('')}
+          </div>
+        </div>
+        <div class="gap-12">
+          ${da ? `<div class="card-sm">
+            <div class="section-title" style="margin-bottom:12px">DA Summary</div>
+            <div class="flex-between text-sm" style="margin-bottom:4px"><span class="text-muted">Total (${da.days}d × ${da.rate} ${da.currency})</span><span class="fw-600">${da.currency} ${da.total}</span></div>
+            <div class="flex-between text-sm" style="margin-bottom:4px"><span class="text-muted">Spent (non-TA)</span><span class="text-red">${da.currency} ${da.spent.toFixed(2)}</span></div>
+            <div class="flex-between text-sm" style="margin-bottom:8px"><span class="text-muted">TA (reimbursable)</span><span class="text-teal">${da.currency} ${da.ta.toFixed(2)}</span></div>
+            <div class="da-bar"><div class="da-fill ${fillCls}" style="width:${pct}%"></div></div>
+            <div class="flex-between text-xs text-mono" style="margin-top:4px"><span class="text-muted">${pct.toFixed(0)}% used</span><span style="color:${da.saved>=0?'var(--green)':'var(--red)'}">${da.currency} ${da.saved.toFixed(2)} ${da.saved>=0?'saved':'over'}</span></div>
+          </div>` : ''}
+          ${trip.insurance ? `<div class="card-sm"><div class="section-title" style="margin-bottom:10px">Insurance</div>
+            <div class="flex-between text-sm" style="margin-bottom:6px"><span class="text-muted">Provider</span><span>${trip.insurance.provider}</span></div>
+            <div class="flex-between text-sm" style="margin-bottom:6px"><span class="text-muted">Policy</span><span class="text-mono text-xs">${trip.insurance.policyNo}</span></div>
+            <div class="flex-between text-sm" style="margin-bottom:6px"><span class="text-muted">Valid</span><span>${fmtDateShort(trip.insurance.validFrom)} → ${fmtDateShort(trip.insurance.validTo)}</span></div>
+            <div class="flex-between text-sm"><span class="text-muted">Helpline</span><span class="text-accent">${trip.insurance.helpline}</span></div>
+          </div>` : ''}
+          ${trip.notes ? `<div class="card-sm"><div class="section-title" style="margin-bottom:8px">Notes</div><p class="text-sm" style="color:var(--text2);line-height:1.6">${trip.notes}</p></div>` : ''}
+        </div>
+      </div>`;
+  }
+
+  else if (tab === 'flights') {
+    el.innerHTML = `<div class="section-head"><span class="section-title">Flight legs</span></div>
+      <div class="card" style="padding:8px 16px">${(trip.flights||[]).map(f=>`
+        <div class="flight-leg">
+          <span class="fl-num">${f.num}</span>
+          <div class="fl-route"><span class="fl-airport">${f.from}</span><span class="fl-arrow">→</span><span class="fl-airport">${f.to}</span></div>
+          <div style="flex:1">
+            <div class="text-xs text-muted text-mono">${fmtDate(f.depDate)}</div>
+            ${getLocalTZLabel(f.to) ? `<div class="text-xs text-muted">${getLocalTZLabel(f.to)}</div>` : ''}
+          </div>
+          <div class="fl-times">
+            <div class="fl-time-ist">${f.depTime} IST → ${f.arrTime} IST</div>
+            <div class="fl-time-local">${localTime(f.depTime, f.to) ? 'Local arr: ' + localTime(f.arrTime, f.to) : ''}</div>
+          </div>
+        </div>`).join('')}
+      </div>`;
+  }
+
+  else if (tab === 'hotels') {
+    el.innerHTML = `<div class="section-head"><span class="section-title">Hotel stays</span></div>
+      <div class="gap-8">${(trip.hotels||[]).map(h=>`
+        <div class="card-sm">
+          <div class="flex-between">
+            <div><div style="font-size:14px;font-weight:600;color:var(--text)">${h.name}</div>
+            <div class="text-sm text-muted">${h.city}</div></div>
+            <span class="badge badge-teal">${h.nights} nights</span>
+          </div>
+          <div class="divider" style="margin:10px 0"></div>
+          <div class="grid-3" style="gap:8px">
+            <div><div class="text-xs text-muted">Check-in</div><div class="text-sm fw-600">${fmtDate(h.checkin)}</div><div class="text-xs text-muted">3:00 PM</div></div>
+            <div><div class="text-xs text-muted">Check-out</div><div class="text-sm fw-600">${fmtDate(h.checkout)}</div><div class="text-xs text-muted">12:00 PM</div></div>
+            <div><div class="text-xs text-muted">Room</div><div class="text-sm fw-600">${h.roomType||'—'}</div><div class="text-xs text-muted ${h.breakfast?'text-green':''}">${h.breakfast?'Breakfast incl.':'Room only'}</div></div>
+          </div>
+          ${h.confirmNo?`<div class="mt-8 text-xs text-mono text-muted">Booking: ${h.confirmNo}</div>`:''}
+          ${h.guests?`<div class="text-xs text-muted" style="margin-top:4px">Guests: ${h.guests}</div>`:''}
+        </div>`).join('')}
+      </div>`;
+  }
+
+  else if (tab === 'sessions') {
+    const s = trip.sessions;
+    if (!s) { el.innerHTML = '<div class="card text-muted text-sm">No sessions logged</div>'; return; }
+    const todayStr = today();
+    el.innerHTML = `
+      <div class="grid-2" style="margin-bottom:16px">
+        <div class="card-sm"><div class="section-title" style="margin-bottom:10px">Session info</div>
+          <div class="flex-between text-sm" style="margin-bottom:6px"><span class="text-muted">Course ID</span><span class="text-mono">${s.courseId||'—'}</span></div>
+          <div class="flex-between text-sm" style="margin-bottom:6px"><span class="text-muted">Trainer</span><span>${s.trainer||'—'}</span></div>
+          <div class="flex-between text-sm" style="margin-bottom:6px"><span class="text-muted">Participants</span><span>${s.pax||'—'} pax</span></div>
+          <div class="flex-between text-sm" style="margin-bottom:6px"><span class="text-muted">Mode</span><span>${s.mode||'—'}</span></div>
+          <div class="flex-between text-sm"><span class="text-muted">Recording</span><span class="${s.recording==='yes'?'text-amber':''}">${s.recording==='yes'?'Mandatory':'Not required'}</span></div>
+        </div>
+        <div class="card-sm"><div class="section-title" style="margin-bottom:10px">Venue</div>
+          <div class="text-sm" style="line-height:1.6;color:var(--text2)">${s.venue||'—'}</div>
+        </div>
+      </div>
+      <div class="section-head"><span class="section-title">Session dates · ${s.startTime||'06:30'}–${s.endTime||'14:30'} IST</span></div>
+      <div class="card" style="padding:8px 16px">
+        ${(s.dates||[]).map(d=>{
+          const isPast = d < todayStr;
+          const isToday = d === todayStr;
+          const dayName = new Date(d).toLocaleDateString('en-GB',{weekday:'short'});
+          const localStart = localTime(s.startTime||'06:30', trip.flights&&trip.flights[1]?trip.flights[1].to:'KUL');
+          return `<div class="session-row">
+            <div class="sess-status ${isPast?'done':isToday?'today':'upcoming'}"></div>
+            <span class="sess-date">${dayName}, ${fmtDateShort(d)}</span>
+            <span class="sess-time">${s.startTime||'06:30'} IST</span>
+            <span class="sess-local">${localStart}</span>
+            <span class="badge ${isPast?'badge-blue':isToday?'badge-green':'badge-accent'}" style="margin-left:auto">${isPast?'done':isToday?'today':'upcoming'}</span>
+          </div>`;
+        }).join('')}
+      </div>`;
+  }
+
+  else if (tab === 'da') {
+    const da = calcDA(trip);
+    const pct = da ? Math.min(100, (da.spent / da.total) * 100) : 0;
+    const fillCls = pct < 70 ? 'safe' : pct < 90 ? 'warn' : 'over';
+    el.innerHTML = `
+      <div class="grid-2" style="margin-bottom:16px">
+        ${da ? `<div class="card-sm">
+          <div class="section-title" style="margin-bottom:12px">Daily Allowance · ${da.days} days</div>
+          <div class="grid-2" style="gap:10px;margin-bottom:14px">
+            <div class="stat-card"><div class="stat-label">Total DA</div><div class="stat-value" style="font-size:20px">${da.currency} ${da.total}</div></div>
+            <div class="stat-card"><div class="stat-label">Remaining</div><div class="stat-value" style="font-size:20px;color:${da.saved>=0?'var(--green)':'var(--red)'}">${da.currency} ${da.saved.toFixed(2)}</div></div>
+          </div>
+          <div class="da-bar"><div class="da-fill ${fillCls}" style="width:${pct}%"></div></div>
+          <div class="flex-between text-xs text-mono" style="margin-top:6px"><span class="text-muted">${pct.toFixed(0)}% used · ${da.currency} ${da.spent.toFixed(2)} spent</span><span class="text-teal">TA: ${da.currency} ${da.ta.toFixed(2)}</span></div>
+        </div>` : '<div class="card-sm text-muted text-sm">No DA set for this trip</div>'}
+        <div class="card-sm">
+          <div class="section-title" style="margin-bottom:10px">TA Policy</div>
+          <div class="text-sm text-muted">${trip.da?.taPolicy === 'reimbursed' ? 'Transport allowance is reimbursed at the end of the trip based on submitted bills.' : trip.da?.taPolicy === 'fixed' ? 'Fixed TA amount per trip.' : 'TA not applicable.'}</div>
+        </div>
+      </div>
+      <div class="section-head">
+        <span class="section-title">Expenses log</span>
+        <button class="btn btn-primary btn-sm" onclick="openExpenseForm('${trip.id}')">+ Log expense</button>
+      </div>
+      <div class="card" style="padding:8px 16px">
+        ${(trip.expenses||[]).length ? (trip.expenses||[]).map((e,i)=>`
+          <div class="expense-row">
+            <span class="exp-cat">${CAT_ICONS[e.cat]||'📦'} ${e.cat}</span>
+            <div><div class="exp-desc">${e.desc}</div><div class="text-xs text-muted text-mono">${fmtDate(e.date)}</div></div>
+            <div style="text-align:right">
+              <div class="exp-amt ${e.ta==='yes'?'text-teal':''}">${e.currency} ${parseFloat(e.amount).toFixed(2)}</div>
+              ${e.ta==='yes'?'<div class="exp-ta">TA reimbursable</div>':''}
+            </div>
+            <button class="delete-btn" onclick="deleteExpense('${trip.id}',${i})">✕</button>
+          </div>`).join('') : '<div class="text-muted text-sm" style="padding:20px 0;text-align:center">No expenses logged yet</div>'}
+      </div>`;
+  }
+
+  else if (tab === 'places') {
+    el.innerHTML = `
+      <div class="section-head">
+        <span class="section-title">Places to explore · ${trip.city}</span>
+        <button class="btn btn-primary btn-sm" onclick="openPlaceForm('${trip.id}')">+ Add place</button>
+      </div>
+      <div class="gap-8">
+        ${(trip.places||[]).map((p,i)=>`
+          <div class="place-card">
+            <div class="place-icon">${CAT_ICONS[p.cat]||'📍'}</div>
+            <div style="flex:1">
+              <div class="place-name ${p.visited?'':''}${p.visited?'text-muted':''}" style="${p.visited?'text-decoration:line-through;':''}">
+                ${p.name}
+              </div>
+              <div class="place-sub">${p.cat}${p.notes?' · '+p.notes:''}</div>
+            </div>
+            <div style="display:flex;gap:6px;align-items:center">
+              <a href="https://www.google.com/maps/search/${encodeURIComponent(p.name+' '+trip.city)}" target="_blank" class="btn btn-ghost btn-sm" style="font-size:11px">Map</a>
+              <button class="btn btn-ghost btn-sm" style="font-size:11px" onclick="toggleVisited('${trip.id}',${i})">${p.visited?'↩ Unmark':'✓ Visited'}</button>
+              <button class="delete-btn" onclick="deletePlace('${trip.id}',${i})">✕</button>
+            </div>
+          </div>`).join('') || '<div class="card text-muted text-sm" style="text-align:center;padding:30px">No places added yet</div>'}
+      </div>`;
+  }
+}
+
+// ═══════════════════════════════════════════════════════
+//  FLIGHT LOG
+// ═══════════════════════════════════════════════════════
+function renderFlightLog() {
+  const flights = [...DB.flightHistory].sort((a,b)=>new Date(b.dep)-new Date(a.dep));
+  document.getElementById('flightLogSub').textContent = `${flights.length} flights · ${[...new Set(flights.flatMap(f=>[f.from,f.to]))].length} airports`;
+  const table = document.getElementById('flightHistTable');
+  table.innerHTML = `<thead><tr><th>#</th><th>Flight</th><th>From</th><th>To</th><th>Departure</th><th>Arrival</th></tr></thead>
+    <tbody>${flights.map((f,i)=>`<tr>
+      <td>${flights.length-i}</td>
+      <td><span class="badge badge-accent">${f.num}</span></td>
+      <td><span class="fh-airport">${f.from}</span></td>
+      <td><span class="fh-airport">${f.to}</span></td>
+      <td>${f.dep?fmtDate(f.dep.slice(0,10)):''} ${f.dep?f.dep.slice(11,16):''}</td>
+      <td>${f.arr?f.arr.slice(11,16):''}</td>
+    </tr>`).join('')}</tbody>`;
+}
+
+// ═══════════════════════════════════════════════════════
+//  DA PAGE
+// ═══════════════════════════════════════════════════════
+function renderDA() {
+  const trips = DB.trips.filter(t=>t.da);
+  document.getElementById('daContent').innerHTML = `
+    <div class="section-title" style="margin-bottom:16px">DA & Expenses — All trips</div>
+    <div class="gap-12">${trips.map(t=>{
+      const da = calcDA(t);
+      if(!da) return '';
+      const pct = Math.min(100,(da.spent/da.total)*100);
+      const fillCls = pct<70?'safe':pct<90?'warn':'over';
+      return `<div class="card">
+        <div class="flex-between" style="margin-bottom:12px">
+          <div><div style="font-weight:600;font-size:15px">${getTripFlag(t)} ${t.name}</div><div class="text-xs text-muted text-mono">${fmtDate(t.start)} → ${fmtDate(t.end)} · ${da.days} days</div></div>
+          <button class="btn btn-ghost btn-sm" onclick="viewTrip('${t.id}');setTimeout(()=>tripTab('da',document.querySelector('#tripDetailTabs .tab:nth-child(5)')),100)">View →</button>
+        </div>
+        <div class="grid-4" style="gap:10px;margin-bottom:12px">
+          <div class="stat-card"><div class="stat-label">Total DA</div><div class="stat-value" style="font-size:18px">${da.currency} ${da.total}</div></div>
+          <div class="stat-card"><div class="stat-label">Spent</div><div class="stat-value" style="font-size:18px;color:var(--red)">${da.currency} ${da.spent.toFixed(0)}</div></div>
+          <div class="stat-card"><div class="stat-label">TA (claim)</div><div class="stat-value" style="font-size:18px;color:var(--teal)">${da.currency} ${da.ta.toFixed(0)}</div></div>
+          <div class="stat-card"><div class="stat-label">Saved</div><div class="stat-value" style="font-size:18px;color:${da.saved>=0?'var(--green)':'var(--red)'}">${da.currency} ${da.saved.toFixed(0)}</div></div>
+        </div>
+        <div class="da-bar"><div class="da-fill ${fillCls}" style="width:${pct}%"></div></div>
+      </div>`;
+    }).join('')}
+    ${trips.length===0?'<div class="card text-muted text-sm" style="text-align:center;padding:40px">No DA data — add DA rates when creating trips</div>':''}`;
+}
+
+// ═══════════════════════════════════════════════════════
+//  EXPLORE PAGE
+// ═══════════════════════════════════════════════════════
+function renderExplore() {
+  const allPlaces = DB.trips.flatMap(t=>(t.places||[]).map(p=>({...p,tripName:t.name,city:t.city,tripId:t.id})));
+  const byCity = {};
+  allPlaces.forEach(p=>{ if(!byCity[p.city]) byCity[p.city]=[]; byCity[p.city].push(p); });
+  document.getElementById('exploreContent').innerHTML = `
+    <div class="section-title" style="margin-bottom:16px">Places to explore · ${allPlaces.length} places across ${Object.keys(byCity).length} cities</div>
+    ${Object.entries(byCity).map(([city,places])=>`
+      <div style="margin-bottom:20px">
+        <div class="section-sub" style="margin-bottom:10px">${city}</div>
+        <div class="gap-8">${places.map((p,i)=>`
+          <div class="place-card">
+            <div class="place-icon">${CAT_ICONS[p.cat]||'📍'}</div>
+            <div style="flex:1"><div class="place-name" style="${p.visited?'text-decoration:line-through;color:var(--text3)':''}">${p.name}</div>
+            <div class="place-sub">${p.cat}${p.notes?' · '+p.notes:''} · <span class="text-accent">${p.tripName}</span></div></div>
+            <div style="display:flex;gap:6px">
+              <a href="https://www.google.com/maps/search/${encodeURIComponent(p.name+' '+city)}" target="_blank" class="btn btn-ghost btn-sm" style="font-size:11px">Map</a>
+              <span class="badge ${p.visited?'badge-blue':'badge-amber'}">${p.visited?'visited':'to do'}</span>
+            </div>
+          </div>`).join('')}
+        </div>
+      </div>`).join('') || '<div class="card text-muted text-sm" style="text-align:center;padding:40px">No places added yet — add places from a trip detail</div>'}`;
+}
+
+// ═══════════════════════════════════════════════════════
+//  SETTINGS
+// ═══════════════════════════════════════════════════════
+function renderSettings() {
+  const gh = loadGH();
+  document.getElementById('ghUser').value = gh.user || '';
+  document.getElementById('ghRepo').value = gh.repo || '';
+  document.getElementById('ghToken').value = gh.token || '';
+}
+
+function saveGHSettings() {
+  const gh = { user: document.getElementById('ghUser').value.trim(), repo: document.getElementById('ghRepo').value.trim(), token: document.getElementById('ghToken').value.trim() };
+  saveGH(gh);
+  document.getElementById('ghTestResult').textContent = '✓ Saved';
+  document.getElementById('ghTestResult').style.color = 'var(--green)';
+  setTimeout(()=>{ document.getElementById('ghTestResult').textContent=''; }, 2000);
+}
+
+async function testGHConnection() {
+  const gh = loadGH();
+  const el = document.getElementById('ghTestResult');
+  if (!gh.token || !gh.user || !gh.repo) { el.textContent = '✗ Fill all fields first'; el.style.color='var(--red)'; return; }
+  el.textContent = 'Testing...'; el.style.color='var(--text3)';
+  try {
+    const r = await fetch(`https://api.github.com/repos/${gh.user}/${gh.repo}`, { headers: { Authorization: `token ${gh.token}`, Accept: 'application/vnd.github.v3+json' } });
+    if (r.ok) { el.textContent = '✓ Connected!'; el.style.color='var(--green)'; }
+    else { el.textContent = '✗ Failed — check token/repo'; el.style.color='var(--red)'; }
+  } catch(e) { el.textContent = '✗ Network error'; el.style.color='var(--red)'; }
+}
+
+// ═══════════════════════════════════════════════════════
+//  GITHUB SYNC
+// ═══════════════════════════════════════════════════════
+async function syncNow() {
+  const gh = loadGH();
+  const el = document.getElementById('syncStatus');
+  if (!gh.token || !gh.user || !gh.repo) { el.textContent = 'Configure GitHub in Settings first'; return; }
+  el.textContent = 'Syncing...';
+  try {
+    const content = btoa(unescape(encodeURIComponent(JSON.stringify(DB, null, 2))));
+    let sha = '';
+    try {
+      const get = await fetch(`https://api.github.com/repos/${gh.user}/${gh.repo}/contents/trips-data.json`, { headers: { Authorization: `token ${gh.token}` } });
+      if (get.ok) { const j = await get.json(); sha = j.sha; }
+    } catch(e){}
+    const body = { message: `Trip data sync ${new Date().toISOString().slice(0,10)}`, content, ...(sha?{sha}:{}) };
+    const r = await fetch(`https://api.github.com/repos/${gh.user}/${gh.repo}/contents/trips-data.json`, { method:'PUT', headers:{ Authorization:`token ${gh.token}`, 'Content-Type':'application/json' }, body: JSON.stringify(body) });
+    if (r.ok) { el.textContent = '✓ Synced ' + new Date().toLocaleTimeString(); }
+    else { el.textContent = '✗ Sync failed'; }
+  } catch(e) { el.textContent = '✗ Error: ' + e.message; }
+}
+
+// ═══════════════════════════════════════════════════════
+//  TRIP FORM
+// ═══════════════════════════════════════════════════════
+let editingTripId = null;
+
+function openTripForm(tripId) {
+  editingTripId = tripId || null;
+  document.getElementById('tripModalTitle').textContent = tripId ? 'Edit Trip' : 'New Trip';
+  document.getElementById('flightLegsForm').innerHTML = '';
+  document.getElementById('hotelEntriesForm').innerHTML = '';
+  document.getElementById('sessionDatesForm').innerHTML = '';
+
+  if (tripId) {
+    const t = DB.trips.find(x=>x.id===tripId);
+    if (!t) return;
+    document.getElementById('f_name').value = t.name||'';
+    document.getElementById('f_city').value = t.city||'';
+    document.getElementById('f_country').value = t.country||'';
+    document.getElementById('f_type').value = t.type||'training';
+    document.getElementById('f_start').value = t.start||'';
+    document.getElementById('f_end').value = t.end||'';
+    document.getElementById('f_notes').value = t.notes||'';
+    document.getElementById('f_courseId').value = t.sessions?.courseId||'';
+    document.getElementById('f_trainer').value = t.sessions?.trainer||'';
+    document.getElementById('f_pax').value = t.sessions?.pax||'';
+    document.getElementById('f_mode').value = t.sessions?.mode||'ILT';
+    document.getElementById('f_recording').value = t.sessions?.recording||'yes';
+    document.getElementById('f_venue').value = t.sessions?.venue||'';
+    document.getElementById('f_daIntl').value = t.da?.intlRate||'';
+    document.getElementById('f_daIndia').value = t.da?.indiaRate||'';
+    document.getElementById('f_ta').value = t.da?.taPolicy||'reimbursed';
+    (t.flights||[]).forEach(f=>addFlightLeg(f));
+    (t.hotels||[]).forEach(h=>addHotelEntry(h));
+    (t.sessions?.dates||[]).forEach(d=>addSessionDate(d));
+  } else {
+    ['f_name','f_city','f_country','f_notes','f_courseId','f_trainer','f_pax','f_venue','f_daIntl','f_daIndia'].forEach(id=>{ const el=document.getElementById(id); if(el) el.value=''; });
+    addFlightLeg(); addHotelEntry(); addSessionDate();
+  }
+  document.getElementById('tripModal').classList.remove('hidden');
+}
+
+function editTrip(id) { openTripForm(id); }
+
+function addFlightLeg(data) {
+  const id = uid();
+  const div = document.createElement('div');
+  div.className = 'repeating-item';
+  div.style.cssText = 'flex-wrap:wrap;gap:6px;align-items:flex-end;border:1px solid var(--border);border-radius:var(--radius-sm);padding:10px;margin-bottom:8px;background:var(--bg3)';
+  div.id = 'fl_' + id;
+  div.innerHTML = `
+    <div style="display:grid;grid-template-columns:repeat(6,1fr) auto;gap:6px;width:100%;align-items:end">
+      <div><label class="form-label">Flight no.</label><input type="text" class="form-input" placeholder="6E-6535" value="${data?.num||''}"></div>
+      <div><label class="form-label">From</label><input type="text" class="form-input" placeholder="COK" value="${data?.from||''}"></div>
+      <div><label class="form-label">To</label><input type="text" class="form-input" placeholder="BLR" value="${data?.to||''}"></div>
+      <div><label class="form-label">Dep date</label><input type="date" class="form-input" value="${data?.depDate||''}"></div>
+      <div><label class="form-label">Dep time</label><input type="time" class="form-input" value="${data?.depTime||''}"></div>
+      <div><label class="form-label">Arr time</label><input type="time" class="form-input" value="${data?.arrTime||''}"></div>
+      <button type="button" class="remove-item-btn" onclick="document.getElementById('fl_${id}').remove()">✕</button>
+    </div>`;
+  document.getElementById('flightLegsForm').appendChild(div);
+}
+
+function addHotelEntry(data) {
+  const id = uid();
+  const div = document.createElement('div');
+  div.id = 'ht_' + id;
+  div.style.cssText = 'border:1px solid var(--border);border-radius:var(--radius-sm);padding:10px;margin-bottom:8px;background:var(--bg3)';
+  div.innerHTML = `
+    <div style="display:grid;grid-template-columns:2fr 1fr 1fr 1fr auto;gap:6px;align-items:end;margin-bottom:6px">
+      <div><label class="form-label">Hotel name</label><input type="text" class="form-input" placeholder="Travelodge KL City Centre" value="${data?.name||''}"></div>
+      <div><label class="form-label">Check-in</label><input type="date" class="form-input" value="${data?.checkin||''}"></div>
+      <div><label class="form-label">Check-out</label><input type="date" class="form-input" value="${data?.checkout||''}"></div>
+      <div><label class="form-label">Room type</label><input type="text" class="form-input" placeholder="Superior Twin" value="${data?.roomType||''}"></div>
+      <button type="button" class="remove-item-btn" onclick="document.getElementById('ht_${id}').remove()">✕</button>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px">
+      <div><label class="form-label">Booking/confirm no.</label><input type="text" class="form-input" placeholder="NH2921648857..." value="${data?.confirmNo||''}"></div>
+      <div><label class="form-label">Breakfast</label><select class="form-select"><option value="yes" ${data?.breakfast?'selected':''}>Included</option><option value="no" ${!data?.breakfast?'selected':''}>Not included</option></select></div>
+    </div>`;
+  document.getElementById('hotelEntriesForm').appendChild(div);
+}
+
+function addSessionDate(date) {
+  const id = uid();
+  const div = document.createElement('div');
+  div.className = 'repeating-item';
+  div.id = 'sd_' + id;
+  div.innerHTML = `<input type="date" class="form-input" value="${date||''}"><input type="time" class="form-input" style="width:120px" value="06:30" placeholder="Start"><input type="time" class="form-input" style="width:120px" value="14:30" placeholder="End"><button type="button" class="remove-item-btn" onclick="document.getElementById('sd_${id}').remove()">✕</button>`;
+  document.getElementById('sessionDatesForm').appendChild(div);
+}
+
+function saveTrip() {
+  const name = document.getElementById('f_name').value.trim();
+  if (!name) { alert('Please enter a trip name'); return; }
+
+  const flights = [...document.getElementById('flightLegsForm').children].map(div=>{
+    const inputs = div.querySelectorAll('input');
+    return { id:uid(), num:inputs[0].value.trim().toUpperCase(), from:inputs[1].value.trim().toUpperCase(), to:inputs[2].value.trim().toUpperCase(), depDate:inputs[3].value, depTime:inputs[4].value, arrDate:inputs[3].value, arrTime:inputs[5].value };
+  }).filter(f=>f.from&&f.to);
+
+  const hotels = [...document.getElementById('hotelEntriesForm').children].map(div=>{
+    const inputs = div.querySelectorAll('input');
+    const sel = div.querySelector('select');
+    const ci = inputs[1].value, co = inputs[2].value;
+    return { id:uid(), name:inputs[0].value.trim(), checkin:ci, checkout:co, nights:ci&&co?daysBetween(ci,co):0, roomType:inputs[3].value.trim(), confirmNo:inputs[4].value.trim(), breakfast: sel?.value==='yes' };
+  }).filter(h=>h.name);
+
+  const sessionDates = [...document.getElementById('sessionDatesForm').children].map(div=>{
+    const inputs = div.querySelectorAll('input');
+    return inputs[0]?.value;
+  }).filter(Boolean).sort();
+
+  const trip = {
+    id: editingTripId || uid(),
+    name, city: document.getElementById('f_city').value.trim(), country: document.getElementById('f_country').value.trim(),
+    type: document.getElementById('f_type').value, start: document.getElementById('f_start').value, end: document.getElementById('f_end').value,
+    notes: document.getElementById('f_notes').value.trim(), flights, hotels,
+    sessions: { courseId: document.getElementById('f_courseId').value.trim(), trainer: document.getElementById('f_trainer').value.trim(), pax: parseInt(document.getElementById('f_pax').value)||0, mode: document.getElementById('f_mode').value, recording: document.getElementById('f_recording').value, venue: document.getElementById('f_venue').value.trim(), dates: sessionDates, startTime:'06:30', endTime:'14:30', timezone:'IST' },
+    da: { intlRate: parseFloat(document.getElementById('f_daIntl').value)||0, intlCurrency:'USD', indiaRate: parseFloat(document.getElementById('f_daIndia').value)||0, indiaCurrency:'INR', taPolicy: document.getElementById('f_ta').value },
+    expenses: editingTripId ? (DB.trips.find(t=>t.id===editingTripId)?.expenses||[]) : [],
+    places: editingTripId ? (DB.trips.find(t=>t.id===editingTripId)?.places||[]) : [],
+    flag: COUNTRY_FLAGS[document.getElementById('f_country').value.trim()] || '🌐'
+  };
+
+  if (editingTripId) {
+    const idx = DB.trips.findIndex(t=>t.id===editingTripId);
+    if (idx>=0) DB.trips[idx] = trip;
+  } else {
+    DB.trips.unshift(trip);
+    // Also add to flight history
+    flights.forEach(f=>{ DB.flightHistory.push({ num:f.num, from:f.from, to:f.to, dep:f.depDate+'T'+f.depTime, arr:f.depDate+'T'+f.arrTime }); });
+  }
+  saveData(DB);
+  closeModal('tripModal');
+  nav('trips');
+}
+
+function deleteTrip(id) {
+  if (!confirm('Delete this trip? This cannot be undone.')) return;
+  DB.trips = DB.trips.filter(t=>t.id!==id);
+  saveData(DB);
+  nav('trips');
+}
+
+// ═══════════════════════════════════════════════════════
+//  EXPENSE FORM
+// ═══════════════════════════════════════════════════════
+let expenseTripId = null;
+
+function openExpenseForm(tripId) {
+  expenseTripId = tripId;
+  const trip = DB.trips.find(t=>t.id===tripId);
+  document.getElementById('expenseModalSub').textContent = trip ? trip.name : '';
+  document.getElementById('exp_date').value = today();
+  document.getElementById('exp_currency').value = trip?.da?.intlCurrency || 'USD';
+  document.getElementById('expenseModal').classList.remove('hidden');
+}
+
+function saveExpense() {
+  const trip = DB.trips.find(t=>t.id===expenseTripId);
+  if (!trip) return;
+  if (!trip.expenses) trip.expenses = [];
+  trip.expenses.push({
+    id: uid(), date: document.getElementById('exp_date').value,
+    cat: document.getElementById('exp_cat').value, desc: document.getElementById('exp_desc').value.trim(),
+    amount: document.getElementById('exp_amount').value, currency: document.getElementById('exp_currency').value,
+    ta: document.getElementById('exp_ta').value
+  });
+  saveData(DB);
+  closeModal('expenseModal');
+  if (currentTripId === expenseTripId) renderTripTab('da');
+}
+
+function deleteExpense(tripId, idx) {
+  const trip = DB.trips.find(t=>t.id===tripId);
+  if (!trip||!trip.expenses) return;
+  trip.expenses.splice(idx,1);
+  saveData(DB);
+  renderTripTab('da');
+}
+
+// ═══════════════════════════════════════════════════════
+//  PLACE FORM
+// ═══════════════════════════════════════════════════════
+let placeTripId = null;
+
+function openPlaceForm(tripId) {
+  placeTripId = tripId;
+  const trip = DB.trips.find(t=>t.id===tripId);
+  document.getElementById('placeModalSub').textContent = trip ? trip.city + ', ' + trip.country : '';
+  document.getElementById('pl_name').value = '';
+  document.getElementById('pl_notes').value = '';
+  document.getElementById('placeModal').classList.remove('hidden');
+}
+
+function savePlace() {
+  const trip = DB.trips.find(t=>t.id===placeTripId);
+  if (!trip) return;
+  if (!trip.places) trip.places = [];
+  trip.places.push({ id:uid(), name:document.getElementById('pl_name').value.trim(), cat:document.getElementById('pl_cat').value, notes:document.getElementById('pl_notes').value.trim(), visited:false });
+  saveData(DB);
+  closeModal('placeModal');
+  renderTripTab('places');
+}
+
+function toggleVisited(tripId, idx) {
+  const trip = DB.trips.find(t=>t.id===tripId);
+  if (!trip||!trip.places) return;
+  trip.places[idx].visited = !trip.places[idx].visited;
+  saveData(DB);
+  renderTripTab('places');
+}
+
+function deletePlace(tripId, idx) {
+  const trip = DB.trips.find(t=>t.id===tripId);
+  if (!trip||!trip.places) return;
+  trip.places.splice(idx,1);
+  saveData(DB);
+  renderTripTab('places');
+}
+
+// ═══════════════════════════════════════════════════════
+//  MODAL & MISC
+// ═══════════════════════════════════════════════════════
+function closeModal(id) { document.getElementById(id).classList.add('hidden'); }
+document.querySelectorAll('.modal-overlay').forEach(m=>m.addEventListener('click',e=>{ if(e.target===m) m.classList.add('hidden'); }));
+
+function exportData() {
+  const blob = new Blob([JSON.stringify(DB,null,2)], {type:'application/json'});
+  const a = document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='trips-backup.json'; a.click();
+}
+function importData() { document.getElementById('importFileInput').click(); }
+function handleImport(e) {
+  const file = e.target.files[0]; if(!file) return;
+  const reader = new FileReader();
+  reader.onload = ev => { try { DB = JSON.parse(ev.target.result); saveData(DB); renderDashboard(); alert('Imported successfully!'); } catch(err) { alert('Invalid JSON file'); } };
+  reader.readAsText(file);
+}
+function clearAllData() { if(confirm('Delete ALL data? This cannot be undone.')) { localStorage.removeItem(STORAGE_KEY); DB=getDefaultData(); saveData(DB); nav('dashboard'); } }
+
+// ═══════════════════════════════════════════════════════
+//  INIT
+// ═══════════════════════════════════════════════════════
+
+// ═══════════════════════════════════════════════════════
+//  OPENROUTER AI
+// ═══════════════════════════════════════════════════════
+const OR_KEY_LS = 'tripmanager_or';
+function loadORKey() { return localStorage.getItem(OR_KEY_LS) || OR_API_KEY || ''; }
+
+const FREE_MODELS = [
+  'openrouter/free',
+  'meta-llama/llama-3.3-70b-instruct:free',
+  'mistralai/mistral-small-3.1-24b-instruct:free',
+  'qwen/qwen3-8b:free'
+];
+
+async function callAI(prompt) {
+  const key = loadORKey();
+  if (!key || key === 'YOUR_OPENROUTER_KEY_HERE') throw new Error('No OpenRouter key');
+  let lastErr = null;
+  for (const model of FREE_MODELS) {
+    try {
+      const resp = await fetch('https://openrouter.ai/api/v1/chat/completions', {
+        method: 'POST',
+        headers: { 'Authorization': `Bearer ${key}`, 'Content-Type': 'application/json', 'HTTP-Referer': 'https://trip.sarathg.me', 'X-Title': 'Sarath Trip Manager' },
+        body: JSON.stringify({ model, messages: [{ role: 'user', content: prompt }], max_tokens: 1200, temperature: 0.3 })
+      });
+      if (!resp.ok) {
+        const err = await resp.json().catch(() => ({}));
+        const msg = err?.error?.message || '';
+        if (resp.status === 429 || msg.includes('limit') || msg.includes('quota')) { lastErr = new Error(model + ': rate limited'); continue; }
+        throw new Error(msg || 'HTTP ' + resp.status);
+      }
+      const data = await resp.json();
+      const text = data?.choices?.[0]?.message?.content || '';
+      if (text) return text;
+    } catch(e) { if (e.message && (e.message.includes('rate limit') || e.message.includes('limit'))) { lastErr = e; continue; } throw e; }
+  }
+  throw lastErr || new Error('All free models unavailable');
+}
+
+async function testGemini() {
+  const el = document.getElementById('geminiTestResult');
+  if (!el) return;
+  el.textContent = '...testing'; el.style.color = 'var(--text3)';
+  try {
+    const text = await callAI('Reply with just the word OK.');
+    el.textContent = '✓ AI working — ' + text.trim().slice(0,30);
+    el.style.color = 'var(--green)';
+  } catch(e) { el.textContent = '✗ ' + e.message.slice(0,80); el.style.color = 'var(--red)'; }
+}
+
+// ═══════════════════════════════════════════════════════
+//  GOOGLE DRIVE SYNC via GAS
+// ═══════════════════════════════════════════════════════
+async function syncNow() {
+  const statusEl = document.getElementById('syncStatus');
+  if (!GAS_URL || GAS_URL === 'YOUR_GAS_WEB_APP_URL_HERE') {
+    statusEl.textContent = '⚠ GAS URL not set'; statusEl.style.color = 'var(--amber)';
+    setTimeout(() => { statusEl.textContent = ''; }, 3000); return;
+  }
+  statusEl.textContent = '↑ Saving…'; statusEl.style.color = 'var(--text3)';
+  try {
+    const resp = await fetch(GAS_URL, { method: 'POST', headers: { 'Content-Type': 'text/plain' }, body: JSON.stringify({ action: 'save', data: DB }) });
+    const result = await resp.json();
+    if (result.status === 'ok') { statusEl.textContent = '✓ Saved ' + new Date().toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'}); statusEl.style.color = 'var(--green)'; }
+    else { statusEl.textContent = '✗ ' + (result.error || 'Failed'); statusEl.style.color = 'var(--red)'; }
+  } catch(e) { statusEl.textContent = '✗ Network error'; statusEl.style.color = 'var(--red)'; }
+  setTimeout(() => { statusEl.textContent = ''; }, 5000);
+}
+
+async function loadFromDrive() {
+  if (!GAS_URL || GAS_URL === 'YOUR_GAS_WEB_APP_URL_HERE') return false;
+  try {
+    const resp = await fetch(GAS_URL + '?action=load');
+    const result = await resp.json();
+    if (result.status === 'ok' && result.data) { DB = result.data; saveData(DB); return true; }
+  } catch(e) { /* silent */ }
+  return false;
+}
+
+async function loadAndMerge() {
+  const statusEl = document.getElementById('syncStatus');
+  if (statusEl) { statusEl.textContent = '↓ Loading…'; statusEl.style.color = 'var(--text3)'; }
+  const loaded = await loadFromDrive();
+  if (loaded) {
+    if (statusEl) { statusEl.textContent = '✓ Loaded'; statusEl.style.color = 'var(--green)'; setTimeout(() => statusEl.textContent = '', 3000); }
+    renderPage(currentPage);
+  } else { if (statusEl) statusEl.textContent = ''; }
+}
+
+// ═══════════════════════════════════════════════════════
+//  SETTINGS FUNCTIONS
+// ═══════════════════════════════════════════════════════
+function renderSettings() {
+  const gasOK = GAS_URL && GAS_URL !== 'YOUR_GAS_WEB_APP_URL_HERE';
+  const disp = document.getElementById('ghRepoDisplay');
+  if (disp) disp.textContent = gasOK ? 'Google Drive (GAS)' : 'Not configured — add GAS_URL to index.html';
+}
+function saveGHSettings() {}
+async function testGHConnection() {
+  const el = document.getElementById('ghTestResult');
+  if (!el) return;
+  if (!GAS_URL || GAS_URL === 'YOUR_GAS_WEB_APP_URL_HERE') { el.textContent = '✗ GAS URL not set'; el.style.color = 'var(--red)'; return; }
+  el.textContent = '…testing'; el.style.color = 'var(--text3)';
+  try {
+    const resp = await fetch(GAS_URL + '?action=ping');
+    const r = await resp.json();
+    if (r.status === 'ok') { el.textContent = '✓ Google Drive connected'; el.style.color = 'var(--green)'; }
+    else { el.textContent = '✗ ' + (r.error||'error'); el.style.color = 'var(--red)'; }
+  } catch(e) { el.textContent = '✗ ' + e.message; el.style.color = 'var(--red)'; }
+}
+
+renderDashboard();
+loadFromDrive().then(loaded => { if (loaded) renderDashboard(); });
+</script>
+</body>
+</html>
