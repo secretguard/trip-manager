@@ -1443,7 +1443,7 @@ async function testGemini() {
 // ═══════════════════════════════════════════════════════
 async function syncNow() {
   const statusEl = document.getElementById('syncStatus');
-  if (!GAS_URL || GAS_URL === 'YOUR_GAS_WEB_APP_URL_HERE') {
+  if (!GAS_URL || GAS_URL === 'https://script.google.com/macros/s/AKfycbzJ0shYahvEAUwADK_2Q86SVEOdAlqJhMpirmzlyQstp-Jlckz2ag5fVGE4RZwSnGsMjA/exec') {
     statusEl.textContent = '⚠ GAS URL not set'; statusEl.style.color = 'var(--amber)';
     setTimeout(() => { statusEl.textContent = ''; }, 3000); return;
   }
