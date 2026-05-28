@@ -1243,120 +1243,101 @@ async function getAiFlightInfo(num, from, to, airline, duration, triggerBtn) {
 }
 
 function formatAiFlightGuide(rawText, from, to) {
-  // Strip citation markers like [1] [2] [3][4] that search models inject
-  const text = rawText.replace(/\[\d+\]/g, '').replace(/\s{2,}/g, ' ').trim();
-
+  // Strip citation markers [1][2][3] but PRESERVE newlines
+  const text = rawText.replace(/\[\d+\]/g, '').trim();
   const lines = text.split('\n');
-  let html = '';
 
-  // Current section state
+  let html    = '';
   let sectionTitle = '';
   let sectionBody  = [];
-  let currentH2    = '';  // airport context (## BLR or ## KUL or ## THE FLIGHT)
 
   const sectionIcons = {
-    'TERMINAL':        '🏢',
-    'CHECK-IN':        '🏢',
-    'ARRIVAL':         '🏢',
-    'OVERVIEW':        '🏢',
-    'SMOKING':         '🚬',
-    'FOOD':            '🍽️',
-    'RESTAURANT':      '🍽️',
-    'LOUNGE':          '🛋️',
-    'THINGS TO DO':    '🎯',
-    'ACTIVITIES':      '🎯',
-    'LAYOVER':         '⏱️',
-    'DURATION':        '✈️',
-    'AIRCRAFT':        '✈️',
-    'IN-FLIGHT':       '🎬',
-    'ENTERTAINMENT':   '🎬',
-    'SEAT':            '💺',
-    'PRACTICAL':       '💡',
-    'TIPS':            '💡',
-    'TRANSPORT':       '🚌',
+    'TERMINAL':'🏢', 'CHECK-IN':'🏢', 'ARRIVAL':'🏢', 'OVERVIEW':'🏢',
+    'SMOKING':'🚬',
+    'FOOD':'🍽️', 'RESTAURANT':'🍽️',
+    'LOUNGE':'🛋️',
+    'THINGS TO DO':'🎯', 'ACTIVITIES':'🎯',
+    'LAYOVER':'⏱️',
+    'DURATION':'✈️', 'AIRCRAFT':'✈️',
+    'IN-FLIGHT':'🎬', 'ENTERTAINMENT':'🎬',
+    'SEAT':'💺',
+    'PRACTICAL':'💡', 'TIPS':'💡',
   };
 
   function getIcon(title) {
-    const up = title.toUpperCase();
-    for (const [k, v] of Object.entries(sectionIcons)) {
-      if (up.includes(k)) return v;
+    var up = title.toUpperCase();
+    var icons = Object.entries(sectionIcons);
+    for (var i = 0; i < icons.length; i++) {
+      if (up.indexOf(icons[i][0]) !== -1) return icons[i][1];
     }
     return '📌';
   }
 
+  function escapeTags(s) {
+    return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  }
+
   function processLine(line) {
-    // Bold **text**
+    line = escapeTags(line);
     line = line.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
-    // Italic *text*
-    line = line.replace(/\*(.+?)\*/g, '<em>$1</em>');
+    line = line.replace(/\*([^*]+?)\*/g, '<em>$1</em>');
     return line;
   }
 
   function flushSection() {
     if (!sectionTitle) return;
-    const body = sectionBody.join('\n').trim();
-    if (!body) { sectionTitle = ''; sectionBody = []; return; }
-    const icon = getIcon(sectionTitle);
-
-    const bodyLines = body.split('\n');
-    let bodyHtml = '';
-    for (let line of bodyLines) {
-      line = line.trim();
-      if (!line) { bodyHtml += '<div style="height:5px"></div>'; continue; }
-      // Bullet points
-      if (/^[-•*]\s/.test(line)) {
-        bodyHtml += `<div style="display:flex;gap:7px;margin-bottom:4px;line-height:1.5">
-          <span style="color:var(--accent2);flex-shrink:0;margin-top:1px">·</span>
-          <span>${processLine(line.slice(2))}</span>
-        </div>`;
+    var body = sectionBody.join('\n').trim();
+    sectionBody = [];
+    if (!body) { sectionTitle = ''; return; }
+    var icon = getIcon(sectionTitle);
+    var bodyLines = body.split('\n');
+    var bodyHtml = '';
+    for (var bi = 0; bi < bodyLines.length; bi++) {
+      var bl = bodyLines[bi].trim();
+      if (!bl) { bodyHtml += '<div style="height:4px"></div>'; continue; }
+      if (/^[-*\u2022]\s/.test(bl)) {
+        bodyHtml += '<div style="display:flex;gap:7px;margin-bottom:4px;line-height:1.5">'
+          + '<span style="color:var(--accent2);flex-shrink:0">&#183;</span>'
+          + '<span>' + processLine(bl.slice(2)) + '</span></div>';
       } else {
-        bodyHtml += `<div style="margin-bottom:4px;line-height:1.5">${processLine(line)}</div>`;
+        bodyHtml += '<div style="margin-bottom:4px;line-height:1.5">' + processLine(bl) + '</div>';
       }
     }
-
-    html += `<div style="margin-bottom:14px;padding-bottom:14px;border-bottom:1px solid var(--border)">
-      <div style="display:flex;align-items:center;gap:7px;margin-bottom:7px">
-        <span style="font-size:14px">${icon}</span>
-        <span style="font-size:10px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--accent2)">${sectionTitle}</span>
-      </div>
-      <div style="font-size:12px;color:var(--text2);font-family:var(--mono);padding-left:2px">${bodyHtml}</div>
-    </div>`;
+    html += '<div style="margin-bottom:14px;padding-bottom:12px;border-bottom:1px solid var(--border)">'
+      + '<div style="display:flex;align-items:center;gap:7px;margin-bottom:7px">'
+      + '<span style="font-size:14px">' + icon + '</span>'
+      + '<span style="font-size:10px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--accent2)">'
+      + escapeTags(sectionTitle) + '</span></div>'
+      + '<div style="font-size:12px;color:var(--text2);font-family:var(--mono);padding-left:2px">' + bodyHtml + '</div>'
+      + '</div>';
     sectionTitle = '';
-    sectionBody  = [];
   }
 
-  function flushH2() {
-    if (!currentH2) return '';
-    const label = currentH2;
-    currentH2 = '';
-    return label;
-  }
+  for (var li = 0; li < lines.length; li++) {
+    var line = lines[li].trim();
 
-  let currentSection = '';
-
-  for (const raw of lines) {
-    const line = raw.trim();
-    if (!line) { sectionBody.push(''); continue; }
-
-    // H2 airport headers: ## BLR — name  or  ## THE FLIGHT
-    if (/^##\s/.test(line) && !/^###/.test(line)) {
+    // H2: ## BLR Departure Airport  (NOT ###)
+    if (/^##[^#]/.test(line)) {
       flushSection();
-      const label = line.replace(/^##\s+/, '');
-      // Emit an airport header divider
-      html += `<div style="font-size:13px;font-weight:500;color:var(--text);margin:16px 0 10px;padding:10px 12px;background:var(--surface2);border-radius:8px;border-left:3px solid var(--accent)">
-        ${label.includes(from) ? '🛫' : label.includes(to) ? '🛬' : '✈️'} ${label}
-      </div>`;
+      var h2label = line.replace(/^##\s*/, '').trim();
+      var h2icon = (h2label.indexOf(from) !== -1) ? '🛫'
+                 : (h2label.indexOf(to)   !== -1) ? '🛬'
+                 : (h2label.toUpperCase().indexOf('FLIGHT') !== -1) ? '✈️' : '🏢';
+      html += '<div style="font-size:13px;font-weight:500;color:var(--text);'
+            + 'margin:16px 0 10px;padding:10px 12px;background:var(--surface2);'
+            + 'border-radius:8px;border-left:3px solid var(--accent)">'
+            + h2icon + ' ' + escapeTags(h2label) + '</div>';
       continue;
     }
 
-    // H3 section headers: ### SMOKING ROOMS
-    if (/^###\s/.test(line)) {
+    // H3: ### SMOKING ROOMS
+    if (/^###/.test(line)) {
       flushSection();
-      sectionTitle = line.replace(/^###\s+/, '').trim();
+      sectionTitle = line.replace(/^###\s*/, '').trim();
       continue;
     }
 
-    // Numbered section headers: ## 1) SMOKING  or  1. SMOKING
+    // Numbered section: 1. SMOKING ROOMS  (fallback for models that ignore ### format)
     if (/^\d+[.)]\s+[A-Z]/.test(line) && line.length < 60) {
       flushSection();
       sectionTitle = line.replace(/^\d+[.)]\s+/, '').trim();
@@ -1367,7 +1348,14 @@ function formatAiFlightGuide(rawText, from, to) {
   }
   flushSection();
 
-  return `<div style="background:var(--surface2);border:1px solid var(--border);border-radius:var(--r);padding:16px 18px">${html}</div>`;
+  if (!html) {
+    // Fallback: just render as plain text if parsing produced nothing
+    html = '<div style="font-size:12px;color:var(--text2);font-family:var(--mono);white-space:pre-wrap;line-height:1.6">'
+         + escapeTags(text) + '</div>';
+  }
+
+  return '<div style="background:var(--surface2);border:1px solid var(--border);'
+       + 'border-radius:var(--r);padding:16px 18px">' + html + '</div>';
 }
 
 // ─── Currency ─────────────────────────────────────────────
