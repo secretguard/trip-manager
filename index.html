@@ -550,6 +550,17 @@ async function apiAiExpense(summary) {
   return gasGet({ action: 'aiExpense', summary: JSON.stringify(summary) });
 }
 
+async function apiAiFlightInfo(flightNum, from, to, airline, duration) {
+  return gasGet({
+    action: 'aiFlightInfo',
+    flight: flightNum,
+    from,
+    to,
+    airline: airline || '',
+    duration: duration || '',
+  });
+}
+
 // ─── Helpers ──────────────────────────────────────────────
 function uuid() { return crypto.randomUUID(); }
 function fmt(d) { if(!d) return '—'; return new Date(d+'T00:00:00').toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'}); }
@@ -1130,71 +1141,185 @@ async function lookupFlightInline(num, btnId) {
 function lookupFlight(num, btn) { return lookupFlightInline(num, btn.id || btn); }
 
 async function showFlightDetail(num, from, to, depDate, depTime, arrDate, arrTime, airline) {
-  if (!num) return;
+  if (!num && !from) return;
+
   // Calculate duration
-  let durationHtml = '';
+  let durationStr = '';
+  let durationMs = 0;
   if (depDate && depTime && arrDate && arrTime) {
     const depMs = new Date(depDate+'T'+depTime).getTime();
     const arrMs = new Date(arrDate+'T'+arrTime).getTime();
-    const diff  = arrMs - depMs;
-    if (diff > 0) {
-      const h = Math.floor(diff/3600000), m = Math.floor((diff%3600000)/60000);
-      durationHtml = `${h}h ${m}m`;
+    durationMs  = arrMs - depMs;
+    if (durationMs > 0) {
+      const h = Math.floor(durationMs/3600000), m = Math.floor((durationMs%3600000)/60000);
+      durationStr = `${h}h ${m}m`;
     }
   }
+
+  const depFmtLong = depDate ? new Date(depDate+'T00:00').toLocaleDateString('en-IN',{weekday:'short',day:'numeric',month:'short',year:'numeric'}) : '';
+  const arrFmtLong = arrDate ? new Date(arrDate+'T00:00').toLocaleDateString('en-IN',{weekday:'short',day:'numeric',month:'short',year:'numeric'}) : '';
+
   showModal(`
   <div class="modal-header">
-    <h2>✈️ ${num}</h2>
+    <h2>✈️ ${num||from+' → '+to}</h2>
     <button class="btn-icon" onclick="closeModal()">✕</button>
   </div>
   <div class="modal-body">
-    <div style="display:grid;grid-template-columns:1fr auto 1fr;gap:12px;align-items:center;margin-bottom:20px">
+
+    <!-- Route strip -->
+    <div style="display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:8px;background:var(--surface2);border:1px solid var(--border);border-radius:var(--r);padding:16px;margin-bottom:16px">
       <div style="text-align:center">
-        <div style="font-size:32px;font-weight:300;font-family:var(--mono)">${from}</div>
-        <div style="font-size:13px;color:var(--text2);font-family:var(--mono)">${depTime||'—'}</div>
-        <div style="font-size:11px;color:var(--text3);font-family:var(--mono)">${depDate?new Date(depDate+'T00:00').toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'}):''}</div>
+        <div style="font-size:30px;font-weight:300;font-family:var(--mono);color:var(--accent2)">${from}</div>
+        <div style="font-size:12px;font-weight:500;font-family:var(--mono);margin-top:2px">${depTime||'—'}</div>
+        <div style="font-size:10px;color:var(--text3);font-family:var(--mono)">${depFmtLong}</div>
       </div>
-      <div style="text-align:center;padding:0 8px">
-        <div style="font-size:11px;color:var(--text3);font-family:var(--mono);margin-bottom:4px">${durationHtml||'─'}</div>
-        <div style="font-size:18px;color:var(--text3)">────✈</div>
-        <div style="font-size:10px;color:var(--text2);font-family:var(--mono);margin-top:4px">${airline||''}</div>
+      <div style="text-align:center;padding:0 6px">
+        <div style="font-size:12px;font-weight:500;color:var(--text2);font-family:var(--mono)">${durationStr||'──'}</div>
+        <div style="font-size:16px;color:var(--text3);margin:4px 0">────✈</div>
+        <div style="font-size:10px;color:var(--text2);font-family:var(--mono)">${airline||''}</div>
       </div>
       <div style="text-align:center">
-        <div style="font-size:32px;font-weight:300;font-family:var(--mono)">${to}</div>
-        <div style="font-size:13px;color:var(--text2);font-family:var(--mono)">${arrTime||'—'}</div>
-        <div style="font-size:11px;color:var(--text3);font-family:var(--mono)">${arrDate?new Date(arrDate+'T00:00').toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'}):''}</div>
+        <div style="font-size:30px;font-weight:300;font-family:var(--mono);color:var(--accent2)">${to}</div>
+        <div style="font-size:12px;font-weight:500;font-family:var(--mono);margin-top:2px">${arrTime||'—'}</div>
+        <div style="font-size:10px;color:var(--text3);font-family:var(--mono)">${arrFmtLong}</div>
       </div>
     </div>
-    <div id="flight-detail-live" style="margin-bottom:16px">
-      <button class="btn btn-secondary btn-sm" id="fdl-btn" onclick="lookupFlightInline('${num}','fdl-btn')">🔄 Check Live Status</button>
+
+    <!-- Live status -->
+    <div style="margin-bottom:14px">
+      <button class="btn btn-secondary btn-sm" id="fdl-btn" onclick="lookupFlightInline('${num}','fdl-btn')">🔄 Live Status</button>
       <div id="fdl-btn-res"></div>
     </div>
-    <div id="flight-detail-ai" class="ai-box" style="display:none">
-      <div class="ai-label">AI Flight Info</div>
-      <p id="flight-detail-ai-text"></p>
+
+    <!-- AI airport guide -->
+    <div id="flight-ai-section">
+      <button class="btn btn-primary btn-sm" onclick="getAiFlightInfo('${num}','${from}','${to}','${airline}','${durationStr}',this)">
+        🤖 Airport Guide &amp; Flight Tips
+      </button>
+      <div style="font-size:10px;color:var(--text3);font-family:var(--mono);margin-top:4px">
+        Smoking rooms · Restaurants · Lounge · Things to do · In-flight tips
+      </div>
     </div>
-    <button class="btn btn-secondary btn-sm" onclick="getAiFlightInfo('${num}','${from}','${to}','${airline}')">🤖 Get AI Flight Info</button>
+
+    <div id="flight-detail-ai" style="display:none;margin-top:14px">
+      <div id="flight-detail-ai-loading" class="loading" style="display:none;padding:20px 0">
+        <div class="spinner"></div> Getting airport intelligence...
+      </div>
+      <div id="flight-detail-ai-content"></div>
+    </div>
+
   </div>
   <div class="modal-footer"><button class="btn btn-secondary" onclick="closeModal()">Close</button></div>`);
 }
 
-async function getAiFlightInfo(num, from, to, airline) {
+async function getAiFlightInfo(num, from, to, airline, duration, triggerBtn) {
+  const section  = document.getElementById('flight-detail-ai');
+  const loading  = document.getElementById('flight-detail-ai-loading');
+  const content  = document.getElementById('flight-detail-ai-content');
+  if (!section || !content) return;
+
+  // Show loading state
+  if (triggerBtn) { triggerBtn.disabled = true; triggerBtn.textContent = '⏳ Loading...'; }
+  section.style.display = 'block';
+  if (loading) loading.style.display = 'flex';
+  content.innerHTML = '';
+
   try {
-    const res = await apiAiSuggest('__flight__' + num, JSON.stringify({from,to,airline,num}));
-    if (res.ok) {
-      // aiSuggest returns places array; for flight we'll use a different approach
+    const res = await apiAiFlightInfo(num, from, to, airline, duration);
+
+    if (loading) loading.style.display = 'none';
+
+    if (res.ok && res.info) {
+      // Parse the markdown-style text into structured HTML
+      content.innerHTML = formatAiFlightGuide(res.info, from, to);
+    } else {
+      content.innerHTML = `<div style="color:var(--red);font-size:12px;font-family:var(--mono);padding:8px;background:var(--surface2);border-radius:6px">${res.error||'No info returned. Check OpenRouter key in GAS.'}</div>`;
     }
-  } catch(e) {}
-  // Use AI expense endpoint as generic AI call
-  const summary = {flightNumber:num,from,to,airline,request:'Provide brief info about this flight route: typical duration, aircraft type commonly used, which terminal at major airports, and any useful traveller tips. 3-4 sentences max.'};
-  try {
-    const res = await apiAiExpense(summary);
-    if (res.ok && res.advice) {
-      const box = document.getElementById('flight-detail-ai');
-      const txt = document.getElementById('flight-detail-ai-text');
-      if (box && txt) { box.style.display='block'; txt.textContent=res.advice; }
+  } catch(e) {
+    if (loading) loading.style.display = 'none';
+    content.innerHTML = `<div style="color:var(--red);font-size:12px;font-family:var(--mono);padding:8px;background:var(--surface2);border-radius:6px">Error: ${e.message}</div>`;
+  }
+  if (triggerBtn) { triggerBtn.disabled = false; triggerBtn.textContent = '🤖 Airport Guide & Flight Tips'; }
+}
+
+function formatAiFlightGuide(text, from, to) {
+  // Split into sections by numbered headers or markdown ##
+  const lines = text.split('\n');
+  let html = '';
+  let inSection = false;
+  let sectionContent = [];
+  let sectionTitle = '';
+
+  const sectionIcons = {
+    'AIRPORT OVERVIEW':'🏢', 'SMOKING':'🚬', 'FOOD':'🍽️', 'RESTAURANT':'🍽️',
+    'LOUNGE':'🛋️', 'THINGS TO DO':'🎯', 'ACTIVITIES':'🎯', 'LAYOVER':'⏱️',
+    'FLIGHT DURATION':'✈️', 'IN-FLIGHT':'✈️', 'PRACTICAL':'💡', 'TIPS':'💡',
+  };
+
+  function getIcon(title) {
+    const up = title.toUpperCase();
+    for (const [k,v] of Object.entries(sectionIcons)) { if (up.includes(k)) return v; }
+    return '📌';
+  }
+
+  function flushSection() {
+    if (!sectionTitle) return;
+    const icon = getIcon(sectionTitle);
+    const bodyText = sectionContent.join('\n').trim();
+    if (!bodyText) return;
+    // Convert bullet lines
+    const bodyHtml = bodyText.split('\n').map(line=>{
+      line = line.trim();
+      if (!line) return '<div style="height:4px"></div>';
+      if (line.startsWith('- ') || line.startsWith('• ') || line.startsWith('* '))
+        return `<div style="display:flex;gap:6px;margin-bottom:3px"><span style="color:var(--accent2);flex-shrink:0">·</span><span>${line.slice(2)}</span></div>`;
+      // Bold **text**
+      line = line.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+      return `<div style="margin-bottom:3px">${line}</div>`;
+    }).join('');
+    html += `
+    <div style="margin-bottom:12px">
+      <div style="font-size:10px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--accent2);margin-bottom:6px;display:flex;align-items:center;gap:6px">
+        <span>${icon}</span><span>${sectionTitle}</span>
+      </div>
+      <div style="font-size:12px;color:var(--text2);font-family:var(--mono);line-height:1.6;padding-left:4px">${bodyHtml}</div>
+    </div>`;
+    sectionContent = [];
+    sectionTitle = '';
+  }
+
+  // Airport tabs
+  let currentAirport = null;
+  const fromSections = [];
+  const toSections = [];
+  let flightSections = [];
+  let currentGroup = null; // 'from','to','flight'
+
+  for (const line of lines) {
+    const trimmed = line.trim();
+    if (!trimmed) { sectionContent.push(''); continue; }
+
+    // Detect airport context switches
+    if (trimmed.toUpperCase().includes(from.toUpperCase()) && (trimmed.startsWith('#') || /^\d+\./.test(trimmed) || trimmed.includes('AIRPORT'))) {
+      flushSection();
+      if (currentGroup !== 'from') { currentGroup = 'from'; }
+    } else if (trimmed.toUpperCase().includes(to.toUpperCase()) && (trimmed.startsWith('#') || /^\d+\./.test(trimmed) || trimmed.includes('AIRPORT'))) {
+      flushSection();
+      if (currentGroup !== 'to') { currentGroup = 'to'; }
     }
-  } catch(e) {}
+
+    // Detect section headers: ## Title, ### Title, 1. TITLE, **TITLE**
+    const isHeader = trimmed.startsWith('#') || /^\d+\.\s+[A-Z]/.test(trimmed) || /^\*\*[A-Z\s&]+\*\*$/.test(trimmed);
+    if (isHeader) {
+      flushSection();
+      sectionTitle = trimmed.replace(/^#+\s*/, '').replace(/^\d+\.\s*/, '').replace(/\*\*/g, '').trim();
+    } else {
+      sectionContent.push(trimmed);
+    }
+  }
+  flushSection();
+
+  return `<div style="background:var(--surface2);border:1px solid var(--border);border-radius:var(--r);padding:16px">${html||'<div style="color:var(--text3);font-size:12px;font-family:var(--mono)">'+text+'</div>'}</div>`;
 }
 // ─── Currency ─────────────────────────────────────────────
 function renderCurrency() {
