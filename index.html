@@ -32,7 +32,7 @@
   --r2:8px;
   --shadow:0 4px 24px rgba(0,0,0,.4);
 }
-html{height:100%;background:var(--bg);color:var(--text);font-family:var(--font);-webkit-font-smoothing:antialiased;font-size:14px}
+html{height:100%;background:var(--bg);color:var(--text);font-family:var(--font);-webkit-font-smoothing:antialiased;font-size:14px}.emoji{font-family:"Segoe UI Emoji","Apple Color Emoji","Noto Color Emoji",sans-serif}
 body{height:100%;overflow:hidden}
 button{font-family:inherit;cursor:pointer;border:none;outline:none}
 input,select,textarea{font-family:var(--mono);font-size:13px;background:var(--surface2);border:1px solid var(--border2);color:var(--text);border-radius:var(--r2);padding:10px 12px;outline:none;width:100%;transition:border-color .2s}
@@ -120,7 +120,7 @@ a{color:var(--accent2);text-decoration:none}
 /* Trip Cards */
 .trip-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:16px;cursor:pointer;transition:all .2s;position:relative;overflow:hidden}
 .trip-card:hover{border-color:var(--border2);box-shadow:var(--shadow)}
-.trip-card .trip-flag{font-size:24px;margin-bottom:8px}
+.trip-card .trip-flag{font-size:24px;margin-bottom:8px;font-family:"Segoe UI Emoji","Apple Color Emoji","Noto Color Emoji",sans-serif}
 .trip-card .trip-name{font-size:14px;font-weight:500;margin-bottom:3px}
 .trip-card .trip-dest{font-size:11px;color:var(--text2);font-family:var(--mono)}
 .trip-card .trip-dates{font-size:10px;color:var(--text3);font-family:var(--mono);margin-top:6px}
@@ -133,7 +133,7 @@ a{color:var(--accent2);text-decoration:none}
 .hero-trip{background:var(--surface2);border:1px solid var(--border2);border-radius:14px;padding:24px;margin-bottom:20px;position:relative;overflow:hidden}
 .hero-trip::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at top right,rgba(59,130,246,.06) 0%,transparent 60%);pointer-events:none}
 .hero-trip .hero-label{font-size:10px;font-weight:500;letter-spacing:.1em;text-transform:uppercase;color:var(--accent2);margin-bottom:10px}
-.hero-trip .hero-flag{font-size:40px;margin-bottom:10px}
+.hero-trip .hero-flag{font-size:40px;margin-bottom:10px;font-family:"Segoe UI Emoji","Apple Color Emoji","Noto Color Emoji",sans-serif}
 .hero-trip .hero-name{font-size:22px;font-weight:500;margin-bottom:3px}
 .hero-trip .hero-dest{font-size:13px;color:var(--text2);margin-bottom:14px}
 
@@ -647,10 +647,10 @@ function renderDashboard() {
   document.getElementById('page-container').innerHTML = `
     ${heroHtml}
     <div class="grid-4" style="margin-bottom:20px">
-      <div class="stat-tile"><div class="stat-label">Total Trips</div><div class="stat-value">${stats.total}</div><div class="stat-sub">${stats.intl} intl · ${stats.dom} domestic</div></div>
-      <div class="stat-tile"><div class="stat-label">Countries</div><div class="stat-value">${stats.countries}</div><div class="stat-sub">visited</div></div>
-      <div class="stat-tile"><div class="stat-label">Flights</div><div class="stat-value">${stats.flights}</div><div class="stat-sub">total segments</div></div>
-      <div class="stat-tile"><div class="stat-label">Days Abroad</div><div class="stat-value">${stats.daysAbroad}</div><div class="stat-sub">travel days</div></div>
+      <div class="stat-tile" style="cursor:pointer" onclick="navigate('past')"><div class="stat-label">Total Trips</div><div class="stat-value">${stats.total}</div><div class="stat-sub">${stats.intl} intl · ${stats.dom} domestic</div></div>
+      <div class="stat-tile" style="cursor:pointer" onclick="navigate('past')"><div class="stat-label">Countries</div><div class="stat-value">${stats.countries}</div><div class="stat-sub">visited</div></div>
+      <div class="stat-tile" style="cursor:pointer" onclick="navigate('flights')"><div class="stat-label">Flights</div><div class="stat-value">${stats.flights}</div><div class="stat-sub">total segments</div></div>
+      <div class="stat-tile" style="cursor:pointer" onclick="navigate('past')"><div class="stat-label">Days Abroad</div><div class="stat-value">${stats.daysAbroad}</div><div class="stat-sub">travel days</div></div>
     </div>
     ${trips.length ? `
     <div class="section-header">
@@ -755,21 +755,74 @@ function renderTripDetailContent(t, container) {
   ${renderFlightsList(t)}${renderHotelsList(t)}${renderSessionsList(t)}${renderExpensesList(t)}${renderPlacesList(t)}${renderInsurance(t)}`;
 }
 
+function flightStatusClass(f) {
+  const now = new Date();
+  const dep = f.depDate ? new Date(f.depDate + 'T' + (f.depTime||'00:00')) : null;
+  const arr = f.arrDate ? new Date(f.arrDate + 'T' + (f.arrTime||'00:00')) : null;
+  if (!dep) return 'past';
+  if (arr && now > arr) return 'past';
+  if (now >= dep && arr && now <= arr) return 'active';
+  if (now < dep) return 'upcoming';
+  return 'past';
+}
+
+function flightRowHtml(f, ctx) {
+  const fid = 'fl' + f.flightNumber.replace(/[^a-z0-9]/gi,'') + Math.random().toString(36).slice(2,6);
+  const legColor = f.leg==='outbound'?'badge-blue':f.leg==='return'?'badge-green':'badge-gray';
+  const depFmt = f.depDate ? new Date(f.depDate+'T00:00').toLocaleDateString('en-IN',{day:'numeric',month:'short'}) : '';
+  const arrFmt = f.arrDate ? new Date(f.arrDate+'T00:00').toLocaleDateString('en-IN',{day:'numeric',month:'short'}) : '';
+  return `<div class="flight-item" style="${ctx==='active'?'border-color:rgba(34,197,94,.4);background:rgba(34,197,94,.04)':''}">
+    <div style="min-width:70px">
+      <span class="flight-num" style="cursor:pointer;text-decoration:underline dotted;text-underline-offset:3px"
+        onclick="showFlightDetail('${f.flightNumber||''}','${f.from||''}','${f.to||''}','${f.depDate||''}','${f.depTime||''}','${f.arrDate||''}','${f.arrTime||''}','${f.airline||''}')"
+      >${f.flightNumber||'—'}</span>
+      <div style="margin-top:4px"><span class="badge ${legColor}" style="font-size:8px;padding:1px 5px">${f.leg||''}</span></div>
+    </div>
+    <div style="flex:1;display:flex;align-items:center;gap:10px">
+      <div style="text-align:center">
+        <div style="font-size:16px;font-weight:500;font-family:var(--mono)">${f.from}</div>
+        <div style="font-size:10px;color:var(--text3);font-family:var(--mono)">${f.depTime||''}</div>
+        <div style="font-size:10px;color:var(--text3);font-family:var(--mono)">${depFmt}</div>
+      </div>
+      <div style="flex:1;text-align:center">
+        <div style="font-size:10px;color:var(--text3)">────</div>
+        <div style="font-size:10px;color:var(--text2);font-family:var(--mono)">${f.airline||''}</div>
+      </div>
+      <div style="text-align:center">
+        <div style="font-size:16px;font-weight:500;font-family:var(--mono)">${f.to}</div>
+        <div style="font-size:10px;color:var(--text3);font-family:var(--mono)">${f.arrTime||''}</div>
+        <div style="font-size:10px;color:var(--text3);font-family:var(--mono)">${arrFmt}</div>
+      </div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:4px;align-items:flex-end">
+      ${ctx==='active'?'<span class="badge badge-green" style="font-size:9px">In Air</span>':''}
+      <button class="btn btn-secondary btn-sm" id="${fid}" style="font-size:10px;padding:4px 8px"
+        onclick="lookupFlightInline('${f.flightNumber}','${fid}')">Live ↗</button>
+    </div>
+  </div>
+  <div id="${fid}-res" style="margin-bottom:4px"></div>`;
+}
+
 function renderFlightsList(t) {
-  if (!(t.flights||[]).length) return `<div class="sub-section"><div class="sub-section-header">✈️ Flights (0)<span>▾</span></div><div class="sub-section-body"><button class="btn btn-secondary btn-sm" style="margin-top:6px" onclick="showAddFlight('${t.id}')">+ Add Flight</button></div></div>`;
+  const flights = t.flights||[];
+  const active   = flights.filter(f=>flightStatusClass(f)==='active');
+  const upcoming = flights.filter(f=>flightStatusClass(f)==='upcoming');
+  const past     = flights.filter(f=>flightStatusClass(f)==='past');
+  const groupLabel = (label, color, extra) =>
+    `<div style="font-size:9px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:${color};margin:12px 0 6px;padding-top:8px;border-top:1px solid var(--border)">${extra} ${label}</div>`;
+  const parts = [
+    active.length   ? groupLabel('In Air','var(--green)','🟢')    + active.map(f=>flightRowHtml(f,'active')).join('')   : '',
+    upcoming.length ? groupLabel('Upcoming','var(--accent2)','⏭') + upcoming.map(f=>flightRowHtml(f,'upcoming')).join('') : '',
+    past.length     ? groupLabel('Completed','var(--text3)','✓')  + past.map(f=>flightRowHtml(f,'past')).join('')        : '',
+  ].filter(Boolean).join('');
   return `<div class="sub-section">
-    <div class="sub-section-header" onclick="toggleSection(this)">✈️ Flights (${t.flights.length}) <span>▾</span></div>
+    <div class="sub-section-header" onclick="toggleSection(this)">✈️ Flights (${flights.length}) <span>▾</span></div>
     <div class="sub-section-body">
-      ${t.flights.map(f=>`<div class="flight-item">
-        <span class="flight-num">${f.flightNumber||'—'}</span>
-        <div class="flight-route"><strong>${f.from}</strong><span class="arrow">→</span><strong>${f.to}</strong></div>
-        <div class="flight-time"><div>${f.depDate||''} ${f.depTime||''}</div><div>${f.airline||''}</div><span class="badge badge-gray">${f.leg||''}</span></div>
-      </div>`).join('')}
-      <button class="btn btn-secondary btn-sm" style="margin-top:8px" onclick="showAddFlight('${t.id}')">+ Add Flight</button>
+      ${flights.length ? parts : '<div style="color:var(--text3);font-size:12px;padding:8px 0">No flights added yet</div>'}
+      <button class="btn btn-secondary btn-sm" style="margin-top:10px" onclick="showAddFlight('${t.id}')">+ Add Flight</button>
     </div>
   </div>`;
 }
-
 function renderHotelsList(t) {
   return `<div class="sub-section">
     <div class="sub-section-header" onclick="toggleSection(this)">🏨 Hotels (${(t.hotels||[]).length}) <span>▾</span></div>
@@ -789,15 +842,54 @@ function renderSessionsList(t) {
   return `<div class="sub-section">
     <div class="sub-section-header" onclick="toggleSection(this)">📋 Sessions (${t.sessions.length}) <span>▾</span></div>
     <div class="sub-section-body">
-      ${t.sessions.map(s=>`<div class="hotel-item">
-        <div class="hotel-name">${s.courseId||'Session'} — ${s.trainer||''}</div>
-        <div class="hotel-meta">${(s.dates||[]).join(', ')} · ${s.startTime||''}–${s.endTime||''} · ${s.pax||''} pax · ${s.mode||''}</div>
-        ${s.venue?`<div style="font-size:10px;color:var(--text3);font-family:var(--mono);margin-top:2px">${s.venue}${s.recording?' · 🎥 Recorded':''}</div>`:''}
-      </div>`).join('')}
+      ${t.sessions.map(s=>{
+        const dates = s.dates||[];
+        // Group dates by week
+        const weeks = [];
+        let week = [];
+        dates.forEach((d,i)=>{
+          const prev = dates[i-1];
+          if (prev) {
+            const gap = (new Date(d) - new Date(prev)) / 86400000;
+            if (gap > 3) { weeks.push(week); week = []; }
+          }
+          week.push(d);
+        });
+        if (week.length) weeks.push(week);
+        const weekHtml = weeks.length > 0 ? weeks.map((wk,wi)=>`
+          <div style="margin-bottom:8px">
+            <div style="font-size:9px;color:var(--text3);font-family:var(--mono);margin-bottom:4px">Week ${wi+1} · ${wk.length} day${wk.length!==1?'s':''}</div>
+            <div style="display:flex;flex-wrap:wrap;gap:4px">
+              ${wk.map(d=>{
+                const dt = new Date(d+'T00:00');
+                const dayName = dt.toLocaleDateString('en-IN',{weekday:'short'});
+                const dayNum = dt.toLocaleDateString('en-IN',{day:'numeric',month:'short'});
+                return `<div style="background:var(--surface);border:1px solid var(--border2);border-radius:6px;padding:4px 8px;text-align:center;min-width:52px">
+                  <div style="font-size:9px;color:var(--text3);font-family:var(--mono)">${dayName}</div>
+                  <div style="font-size:11px;font-family:var(--mono);color:var(--text2)">${dayNum}</div>
+                </div>`;
+              }).join('')}
+            </div>
+          </div>`).join('') : '<div style="font-size:11px;color:var(--text3);font-family:var(--mono)">Dates TBD</div>';
+        return `<div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:14px;margin-bottom:8px">
+          <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:12px;flex-wrap:wrap;gap:8px">
+            <div>
+              <div style="font-size:13px;font-weight:500">${s.courseId||'Training Session'}</div>
+              <div style="font-size:11px;color:var(--text2);font-family:var(--mono);margin-top:2px">${s.trainer||''} · ${s.pax?s.pax+' pax':''} · ${s.mode||''}</div>
+            </div>
+            <div style="display:flex;gap:4px;flex-wrap:wrap">
+              ${s.recording?'<span class="badge badge-purple">🎥 Recorded</span>':''}
+              <span class="badge badge-gray">${s.startTime||''}–${s.endTime||''} IST</span>
+              <span class="badge badge-gray">${dates.length} days</span>
+            </div>
+          </div>
+          ${s.venue?`<div style="font-size:11px;color:var(--text2);font-family:var(--mono);margin-bottom:10px;padding:8px;background:var(--surface2);border-radius:6px">📍 ${s.venue}</div>`:''}
+          ${weekHtml}
+        </div>`;
+      }).join('')}
     </div>
   </div>`;
 }
-
 function renderExpensesList(t) {
   const exps = t.expenses||[];
   return `<div class="sub-section">
@@ -818,22 +910,46 @@ function renderExpensesList(t) {
 
 function renderPlacesList(t) {
   const places = t.places||[];
+  const manual = places.filter(p=>!p.aiGenerated);
+  const ai     = places.filter(p=>p.aiGenerated);
+  const visited = places.filter(p=>p.visited).length;
+
+  function placeItem(p, i) {
+    const globalIdx = places.indexOf(p);
+    return `<div class="place-item">
+      <div class="place-icon" style="background:var(--surface)">${catEmoji[p.category]||'📍'}</div>
+      <div style="flex:1">
+        <div class="place-name">${p.name}</div>
+        <div class="place-notes">${p.notes||''}</div>
+        <div style="margin-top:3px"><span class="badge badge-gray" style="font-size:8px">${p.category||'misc'}</span></div>
+      </div>
+      <div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px;margin-left:8px">
+        <button class="btn btn-sm ${p.visited?'btn-primary':'btn-secondary'}" style="font-size:10px;padding:4px 10px"
+          onclick="togglePlaceVisited('${t.id}',${globalIdx})">${p.visited?'✓ Done':'Mark visited'}</button>
+        ${p.name?`<a href="https://maps.google.com/search?q=${encodeURIComponent(p.name+' '+((t.destination&&t.destination.city)||''))}" target="_blank" style="font-size:10px;color:var(--text3)">Maps ↗</a>`:''}
+      </div>
+    </div>`;
+  }
+
   return `<div class="sub-section">
-    <div class="sub-section-header" onclick="toggleSection(this)">📍 Places (${places.length}) <span>▾</span></div>
+    <div class="sub-section-header" onclick="toggleSection(this)">📍 Places (${places.length}${visited?' · '+visited+' visited':''}) <span>▾</span></div>
     <div class="sub-section-body">
-      ${places.map((p,i)=>`<div class="place-item">
-        <div class="place-icon">${catEmoji[p.category]||'📍'}</div>
-        <div><div class="place-name">${p.name}</div><div class="place-notes">${p.notes||''}</div></div>
-        <button class="btn btn-sm ${p.visited?'btn-primary':'btn-secondary'}" style="margin-left:auto;font-size:11px" onclick="togglePlaceVisited('${t.id}',${i})">${p.visited?'✓':'Visit'}</button>
-      </div>`).join('')}
-      <div style="display:flex;gap:8px;margin-top:8px;flex-wrap:wrap">
+      ${manual.length ? `
+      <div style="font-size:9px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--text3);margin-bottom:6px">Your List (${manual.length})</div>
+      ${manual.map(p=>placeItem(p,places.indexOf(p))).join('')}
+      ` : ''}
+      ${ai.length ? `
+      <div style="font-size:9px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--purple);margin:12px 0 6px;padding-top:10px;border-top:1px solid var(--border)">🤖 AI Suggestions (${ai.length})</div>
+      ${ai.map(p=>placeItem(p,places.indexOf(p))).join('')}
+      ` : ''}
+      ${!places.length ? '<div style="color:var(--text3);font-size:12px;padding:8px 0">No places added yet</div>' : ''}
+      <div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap">
         <button class="btn btn-secondary btn-sm" onclick="showAddPlace('${t.id}')">+ Add</button>
-        ${t.destination?.city?`<button class="btn btn-secondary btn-sm" onclick="getAiPlaces('${t.id}')">🤖 Suggest</button>`:''}
+        ${t.destination&&t.destination.city?`<button class="btn btn-secondary btn-sm" onclick="getAiPlaces('${t.id}')">🤖 AI Suggest</button>`:''}
       </div>
     </div>
   </div>`;
 }
-
 function renderInsurance(t) {
   const ins = t.insurance; if(!ins) return '';
   return `<div class="sub-section">
@@ -907,50 +1023,179 @@ function filterPastTrips(q) {
 // ─── Flights ──────────────────────────────────────────────
 function renderFlights() {
   const history = (appData.flightHistory||[]).slice().sort((a,b)=>new Date(b.dep)-new Date(a.dep));
+  const now = new Date();
+  const active   = history.filter(f=>{ const d=new Date(f.dep),a=new Date(f.arr); return now>=d&&now<=a; });
+  const upcoming = history.filter(f=>new Date(f.dep)>now);
+  const past     = history.filter(f=>new Date(f.arr||f.dep)<now);
+
+  function histRow(f) {
+    const fid = 'hfl'+Math.random().toString(36).slice(2,7);
+    const depDate = f.dep ? new Date(f.dep) : null;
+    return `<tr>
+      <td><span style="color:var(--accent2);cursor:pointer;text-decoration:underline dotted;text-underline-offset:3px"
+        onclick="showFlightDetail('${f.flightNumber||''}','${f.from||''}','${f.to||''}','${(f.dep||'').split('T')[0]}','${(f.dep||'').split('T')[1]||''}','${(f.arr||'').split('T')[0]}','${(f.arr||'').split('T')[1]||''}','')"
+      >${f.flightNumber||'—'}</span></td>
+      <td><strong>${f.from}</strong> → <strong>${f.to}</strong></td>
+      <td style="font-family:var(--mono)">${depDate?depDate.toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'}):''}</td>
+      <td>
+        <button class="btn btn-secondary btn-sm" id="${fid}" style="font-size:10px" onclick="lookupFlightInline('${f.flightNumber}','${fid}')">Live ↗</button>
+      </td>
+    </tr>
+    <tr id="${fid}-res" style="display:none"><td colspan="4" style="padding:0 12px 8px"></td></tr>`;
+  }
+
+  function section(label, color, icon, rows) {
+    if (!rows.length) return '';
+    return `<div style="margin-bottom:20px">
+      <div style="font-size:10px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:${color};margin-bottom:8px">${icon} ${label} (${rows.length})</div>
+      <div class="card" style="overflow:hidden">
+        <table class="data-table">
+          <thead><tr><th>Flight</th><th>Route</th><th>Date</th><th></th></tr></thead>
+          <tbody>${rows.map(histRow).join('')}</tbody>
+        </table>
+      </div>
+    </div>`;
+  }
+
   document.getElementById('page-container').innerHTML = `
-  <div style="margin-bottom:14px;font-size:12px;color:var(--text2);font-family:var(--mono)">${history.length} segments on record</div>
-  <div class="card">
-    <table class="data-table">
-      <thead><tr><th>Flight</th><th>Route</th><th>Date</th><th>Action</th></tr></thead>
-      <tbody>
-        ${history.map(f=>`<tr>
-          <td style="color:var(--accent2)">${f.flightNumber||'—'}</td>
-          <td><strong>${f.from}</strong> → <strong>${f.to}</strong></td>
-          <td>${f.dep?new Date(f.dep).toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'}):''}</td>
-          <td><button class="btn btn-secondary btn-sm" style="font-size:10px" onclick="lookupFlight('${f.flightNumber}',this)">Live ↗</button></td>
-        </tr>`).join('')}
-        ${!history.length?'<tr><td colspan="4" style="text-align:center;color:var(--text3);padding:36px">No flights on record</td></tr>':''}
-      </tbody>
-    </table>
-  </div>
-  <div id="flight-status-result" style="margin-top:14px"></div>`;
+  <div style="font-size:12px;color:var(--text2);font-family:var(--mono);margin-bottom:16px">${history.length} segments on record</div>
+  ${section('Active / In Air','var(--green)','🟢',active)}
+  ${section('Upcoming','var(--accent2)','⏭',upcoming)}
+  ${section('Past Flights','var(--text3)','✓',past)}
+  ${!history.length?'<div class="empty-state"><div class="empty-icon">✈️</div><p>No flights on record yet</p></div>':''}`;
 }
 
-async function lookupFlight(num, btn) {
+async function lookupFlightInline(num, btnId) {
   if (!num) return;
-  btn.textContent = '...'; btn.disabled = true;
+  const btn = document.getElementById(btnId);
+  if (!btn) return;
+  btn.textContent = '···'; btn.disabled = true;
+  const resEl = document.getElementById(btnId + '-res');
   try {
     const res = await apiFlightStatus(num);
-    const el = document.getElementById('flight-status-result');
-    if (res.ok && res.flights?.length) {
-      const f = res.flights[0]; const dep = f.departure; const arr = f.arrival;
-      el.innerHTML = `<div class="card">
-        <div class="section-title" style="margin-bottom:10px">Live: ${num}</div>
-        <div style="display:flex;gap:14px;flex-wrap:wrap">
-          <div><div style="font-size:9px;color:var(--text3)">STATUS</div><span class="badge ${f.flight_status==='active'?'badge-green':f.flight_status==='landed'?'badge-blue':'badge-gray'}">${f.flight_status||'unknown'}</span></div>
-          <div><div style="font-size:9px;color:var(--text3)">AIRLINE</div><div style="font-size:12px">${f.airline?.name||'—'}</div></div>
-          <div><div style="font-size:9px;color:var(--text3)">DEP</div><div style="font-size:12px;font-family:var(--mono)">${dep?.airport||''} ${dep?.actual||dep?.scheduled||'—'}</div></div>
-          <div><div style="font-size:9px;color:var(--text3)">ARR</div><div style="font-size:12px;font-family:var(--mono)">${arr?.airport||''} ${arr?.actual||arr?.scheduled||'—'}</div></div>
-          ${dep?.delay?`<div><div style="font-size:9px;color:var(--text3)">DELAY</div><span class="badge badge-amber">${dep.delay} min</span></div>`:''}
+    let html = '';
+    if (res.ok && res.flights && res.flights.length) {
+      const f = res.flights[0];
+      const dep = f.departure || {};
+      const arr = f.arrival   || {};
+      const statusColor = f.flight_status==='active'?'badge-green':f.flight_status==='landed'?'badge-blue':f.flight_status==='cancelled'?'badge-red':'badge-gray';
+      html = `<div style="background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:12px;margin:4px 0 8px;font-size:12px">
+        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:8px;align-items:center">
+          <span class="badge ${statusColor}">${f.flight_status||'unknown'}</span>
+          <span style="color:var(--text2);font-family:var(--mono)">${f.airline?.name||''}</span>
+          ${dep.delay?`<span class="badge badge-amber">+${dep.delay}min delay</span>`:''}
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+          <div>
+            <div style="font-size:9px;color:var(--text3);font-family:var(--mono);margin-bottom:2px">DEPARTURE</div>
+            <div style="font-family:var(--mono)">${dep.airport||dep.iata||'—'}</div>
+            <div style="font-size:10px;color:var(--text2);font-family:var(--mono)">Sched: ${dep.scheduled?new Date(dep.scheduled).toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit',hour12:false}):'—'}</div>
+            <div style="font-size:10px;color:${dep.actual?'var(--green)':'var(--text3)'};font-family:var(--mono)">Actual: ${dep.actual?new Date(dep.actual).toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit',hour12:false}):'—'}</div>
+            ${dep.terminal?`<div style="font-size:10px;color:var(--text3);font-family:var(--mono)">Terminal ${dep.terminal}${dep.gate?' Gate '+dep.gate:''}</div>`:''}
+          </div>
+          <div>
+            <div style="font-size:9px;color:var(--text3);font-family:var(--mono);margin-bottom:2px">ARRIVAL</div>
+            <div style="font-family:var(--mono)">${arr.airport||arr.iata||'—'}</div>
+            <div style="font-size:10px;color:var(--text2);font-family:var(--mono)">Sched: ${arr.scheduled?new Date(arr.scheduled).toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit',hour12:false}):'—'}</div>
+            <div style="font-size:10px;color:${arr.actual?'var(--green)':'var(--text3)'};font-family:var(--mono)">Actual: ${arr.actual?new Date(arr.actual).toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit',hour12:false}):'—'}</div>
+            ${arr.terminal?`<div style="font-size:10px;color:var(--text3);font-family:var(--mono)">Terminal ${arr.terminal}${arr.gate?' Gate '+arr.gate:''}</div>`:''}
+          </div>
         </div>
       </div>`;
     } else {
-      el.innerHTML = `<div class="card"><div style="font-size:12px;color:var(--text3);font-family:var(--mono)">${res.error||'No data found'}</div></div>`;
+      // Show raw error or "no data" with full response for debugging
+      const msg = res.error || (res.ok ? 'No flight data returned for today — try on day of flight' : 'API error');
+      html = `<div style="background:var(--surface2);border:1px solid var(--border);border-radius:6px;padding:10px;margin:4px 0 8px;font-size:11px;color:var(--text2);font-family:var(--mono)">${msg}</div>`;
     }
-  } catch(e) { toast('Flight lookup failed', 'error'); }
+    if (resEl) {
+      // For table rows, set cell content
+      if (resEl.tagName === 'TR') {
+        resEl.style.display = '';
+        resEl.querySelector('td').innerHTML = html;
+      } else {
+        resEl.innerHTML = html;
+      }
+    }
+  } catch(e) {
+    if (resEl) {
+      const errHtml = `<div style="color:var(--red);font-size:11px;font-family:var(--mono);padding:6px 0">Error: ${e.message}</div>`;
+      if (resEl.tagName==='TR') { resEl.style.display=''; resEl.querySelector('td').innerHTML=errHtml; }
+      else resEl.innerHTML = errHtml;
+    }
+  }
   btn.textContent = 'Live ↗'; btn.disabled = false;
 }
 
+// Keep old lookupFlight as alias for backward compat
+function lookupFlight(num, btn) { return lookupFlightInline(num, btn.id || btn); }
+
+async function showFlightDetail(num, from, to, depDate, depTime, arrDate, arrTime, airline) {
+  if (!num) return;
+  // Calculate duration
+  let durationHtml = '';
+  if (depDate && depTime && arrDate && arrTime) {
+    const depMs = new Date(depDate+'T'+depTime).getTime();
+    const arrMs = new Date(arrDate+'T'+arrTime).getTime();
+    const diff  = arrMs - depMs;
+    if (diff > 0) {
+      const h = Math.floor(diff/3600000), m = Math.floor((diff%3600000)/60000);
+      durationHtml = `${h}h ${m}m`;
+    }
+  }
+  showModal(`
+  <div class="modal-header">
+    <h2>✈️ ${num}</h2>
+    <button class="btn-icon" onclick="closeModal()">✕</button>
+  </div>
+  <div class="modal-body">
+    <div style="display:grid;grid-template-columns:1fr auto 1fr;gap:12px;align-items:center;margin-bottom:20px">
+      <div style="text-align:center">
+        <div style="font-size:32px;font-weight:300;font-family:var(--mono)">${from}</div>
+        <div style="font-size:13px;color:var(--text2);font-family:var(--mono)">${depTime||'—'}</div>
+        <div style="font-size:11px;color:var(--text3);font-family:var(--mono)">${depDate?new Date(depDate+'T00:00').toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'}):''}</div>
+      </div>
+      <div style="text-align:center;padding:0 8px">
+        <div style="font-size:11px;color:var(--text3);font-family:var(--mono);margin-bottom:4px">${durationHtml||'─'}</div>
+        <div style="font-size:18px;color:var(--text3)">────✈</div>
+        <div style="font-size:10px;color:var(--text2);font-family:var(--mono);margin-top:4px">${airline||''}</div>
+      </div>
+      <div style="text-align:center">
+        <div style="font-size:32px;font-weight:300;font-family:var(--mono)">${to}</div>
+        <div style="font-size:13px;color:var(--text2);font-family:var(--mono)">${arrTime||'—'}</div>
+        <div style="font-size:11px;color:var(--text3);font-family:var(--mono)">${arrDate?new Date(arrDate+'T00:00').toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'}):''}</div>
+      </div>
+    </div>
+    <div id="flight-detail-live" style="margin-bottom:16px">
+      <button class="btn btn-secondary btn-sm" id="fdl-btn" onclick="lookupFlightInline('${num}','fdl-btn')">🔄 Check Live Status</button>
+      <div id="fdl-btn-res"></div>
+    </div>
+    <div id="flight-detail-ai" class="ai-box" style="display:none">
+      <div class="ai-label">AI Flight Info</div>
+      <p id="flight-detail-ai-text"></p>
+    </div>
+    <button class="btn btn-secondary btn-sm" onclick="getAiFlightInfo('${num}','${from}','${to}','${airline}')">🤖 Get AI Flight Info</button>
+  </div>
+  <div class="modal-footer"><button class="btn btn-secondary" onclick="closeModal()">Close</button></div>`);
+}
+
+async function getAiFlightInfo(num, from, to, airline) {
+  try {
+    const res = await apiAiSuggest('__flight__' + num, JSON.stringify({from,to,airline,num}));
+    if (res.ok) {
+      // aiSuggest returns places array; for flight we'll use a different approach
+    }
+  } catch(e) {}
+  // Use AI expense endpoint as generic AI call
+  const summary = {flightNumber:num,from,to,airline,request:'Provide brief info about this flight route: typical duration, aircraft type commonly used, which terminal at major airports, and any useful traveller tips. 3-4 sentences max.'};
+  try {
+    const res = await apiAiExpense(summary);
+    if (res.ok && res.advice) {
+      const box = document.getElementById('flight-detail-ai');
+      const txt = document.getElementById('flight-detail-ai-text');
+      if (box && txt) { box.style.display='block'; txt.textContent=res.advice; }
+    }
+  } catch(e) {}
+}
 // ─── Currency ─────────────────────────────────────────────
 function renderCurrency() {
   document.getElementById('page-container').innerHTML = `
@@ -979,33 +1224,90 @@ function switchCurrTab(tab, el) {
   else renderAllExpenses();
 }
 
+function getContextTrip() {
+  const trips = appData.trips||[];
+  return trips.find(t=>tripStatus(t)==='present') ||
+         trips.filter(t=>tripStatus(t)==='upcoming').sort((a,b)=>new Date(a.startDate)-new Date(b.startDate))[0] ||
+         null;
+}
+
 function renderRatesTab(cachedAt) {
   if (!exchangeRates) return;
-  const currencies = ['USD','AED','MYR','THB','SGD','GBP','EUR','NGN'];
+  const ctx = getContextTrip();
+  const ctxCur = ctx?.destination?.currency;
+  const ctxFlag = ctx?.destination?.flag||'';
+  const ctxCity = ctx?.destination?.city||'';
+  const allCurrencies = ['USD','AED','MYR','THB','SGD','GBP','EUR','NGN'];
+  const others = allCurrencies.filter(c=>c!==ctxCur);
+
+  function rateCard(c, big) {
+    const r = exchangeRates[c]; if(!r) return '';
+    const inrPer = (1/r).toFixed(2);
+    const sizeStyle = big ? 'font-size:28px' : '';
+    return `<div class="rate-card" ${big?'style="border-color:var(--accent);background:rgba(59,130,246,.05)"':''}>
+      <div class="rate-val" style="${sizeStyle}">${r.toFixed(4)}</div>
+      <div class="rate-label">1 INR → ${c}</div>
+      <div class="rate-inv">₹${inrPer} per ${c}</div>
+    </div>`;
+  }
+
+  let heroHtml = '';
+  if (ctxCur && ctxCur !== 'INR' && exchangeRates[ctxCur]) {
+    const r = exchangeRates[ctxCur];
+    const inrPer = (1/r).toFixed(2);
+    heroHtml = `
+    <div style="background:linear-gradient(135deg,rgba(59,130,246,.08),rgba(59,130,246,.02));border:1px solid rgba(59,130,246,.25);border-radius:var(--r);padding:18px;margin-bottom:16px">
+      <div style="font-size:10px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--accent2);margin-bottom:8px">
+        ${ctxFlag} ${ctxCity} · Active/Next Trip
+      </div>
+      <div style="display:flex;align-items:flex-end;gap:16px;flex-wrap:wrap">
+        <div>
+          <div style="font-size:11px;color:var(--text3);font-family:var(--mono)">1 INR =</div>
+          <div style="font-size:36px;font-weight:300;font-family:var(--mono);color:var(--accent2)">${r.toFixed(4)} ${ctxCur}</div>
+        </div>
+        <div style="padding-bottom:4px">
+          <div style="font-size:11px;color:var(--text3);font-family:var(--mono)">1 ${ctxCur} =</div>
+          <div style="font-size:22px;font-weight:300;font-family:var(--mono);color:var(--text)">₹${inrPer}</div>
+        </div>
+      </div>
+      <div style="margin-top:12px;display:flex;flex-wrap:wrap;gap:8px">
+        ${[100,500,1000,5000].map(amt=>`
+        <div style="background:var(--surface2);border:1px solid var(--border);border-radius:6px;padding:5px 10px;font-family:var(--mono);font-size:11px">
+          <span style="color:var(--text3)">₹${amt.toLocaleString('en-IN')} =</span>
+          <strong> ${(amt*r).toFixed(2)} ${ctxCur}</strong>
+        </div>`).join('')}
+      </div>
+    </div>`;
+  }
+
   document.getElementById('curr-tab-content').innerHTML = `
-  <div style="margin-bottom:14px;display:flex;align-items:center;gap:8px">
-    <span style="font-size:10px;color:var(--text3);font-family:var(--mono)">INR BASE${cachedAt?' · cached '+new Date(cachedAt).toLocaleTimeString():''}</span>
+  <div style="margin-bottom:12px;display:flex;align-items:center;gap:8px">
+    <span style="font-size:10px;color:var(--text3);font-family:var(--mono)">INR BASE · ${cachedAt?'cached '+new Date(cachedAt).toLocaleTimeString():'live'}</span>
     <button class="btn btn-secondary btn-sm" style="font-size:10px" onclick="loadRatesAndRender()">↻ Refresh</button>
   </div>
+  ${heroHtml}
+  ${ctxCur && ctxCur !== 'INR' ? `<div style="font-size:10px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--text3);margin-bottom:8px">All Rates</div>` : ''}
   <div class="grid-4">
-    ${currencies.map(c=>{ const r=exchangeRates[c]; if(!r) return ''; return `<div class="rate-card"><div class="rate-val">${r.toFixed(4)}</div><div class="rate-label">1 INR → ${c}</div><div class="rate-inv">₹${(1/r).toFixed(2)} per ${c}</div></div>`; }).join('')}
+    ${allCurrencies.map(c=>rateCard(c, c===ctxCur)).join('')}
   </div>
   <div style="margin-top:20px">
-    <div class="section-title" style="margin-bottom:10px">Quick Reference (INR ↔ USD)</div>
+    <div class="section-title" style="margin-bottom:10px">Quick Reference · INR ↔ ${ctxCur||'USD'}</div>
     <div class="card" style="overflow-x:auto">
       <table class="data-table">
-        <thead><tr><th>USD</th><th>INR</th><th>USD</th><th>INR</th></tr></thead>
+        <thead><tr><th>INR</th><th>${ctxCur||'USD'}</th><th>INR</th><th>${ctxCur||'USD'}</th></tr></thead>
         <tbody>
-          ${[[1,5],[10,20],[50,100],[200,500]].map(([a,b])=>`<tr>
-            <td>$${a}</td><td>₹${exchangeRates['USD']?Math.round(a/exchangeRates['USD']).toLocaleString('en-IN'):'—'}</td>
-            <td>$${b}</td><td>₹${exchangeRates['USD']?Math.round(b/exchangeRates['USD']).toLocaleString('en-IN'):'—'}</td>
-          </tr>`).join('')}
+          ${[[100,500],[1000,2000],[5000,10000],[20000,50000]].map(([a,b])=>{
+            const rc = exchangeRates[ctxCur||'USD']||1;
+            return `<tr>
+              <td>₹${a.toLocaleString('en-IN')}</td><td>${(a*rc).toFixed(2)}</td>
+              <td>₹${b.toLocaleString('en-IN')}</td><td>${(b*rc).toFixed(2)}</td>
+            </tr>`;
+          }).join('')}
         </tbody>
       </table>
     </div>
   </div>`;
 }
-
 function renderConverterTab() {
   if (!exchangeRates) { document.getElementById('curr-tab-content').innerHTML = '<div class="loading"><div class="spinner"></div></div>'; loadRatesAndRender(); return; }
   const curs = ['USD','AED','MYR','THB','SGD','GBP','EUR','NGN','INR'];
@@ -1065,22 +1367,69 @@ const TIMEZONES = [
   {city:'USA (EST)',tz:'America/New_York',flag:'🇺🇸'},
 ];
 
+// Map destination timezone from trip
+const TZ_MAP = {
+  'Asia/Kuala_Lumpur':'Asia/Kuala_Lumpur','Asia/Dubai':'Asia/Dubai','Asia/Bangkok':'Asia/Bangkok',
+  'Africa/Lagos':'Africa/Lagos','Asia/Singapore':'Asia/Singapore','Asia/Kolkata':'Asia/Kolkata',
+  'Europe/London':'Europe/London','America/New_York':'America/New_York',
+};
+
 function renderClock() {
+  const ctx = getContextTrip();
+  const ctxTz = ctx?.destination?.timezone;
+  const ctxCity = ctx?.destination?.city||'Destination';
+  const ctxFlag = ctx?.destination?.flag||'✈️';
+
   document.getElementById('page-container').innerHTML = `
+  <div id="clock-hero" style="margin-bottom:20px"></div>
+  <div style="font-size:10px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--text3);margin-bottom:10px">All Zones</div>
   <div class="grid-4" id="clocks"></div>
   <div style="margin-top:20px" class="card">
-    <div class="section-title" style="margin-bottom:10px">Session Time Converter</div>
+    <div class="section-title" style="margin-bottom:10px">Session Time Converter (IST →)</div>
     <div class="form-row">
       <div class="form-group"><label>IST Time</label><input type="time" id="ist-input" value="09:00" oninput="convertSesTime()"></div>
       <div class="form-group"><label>IST Date</label><input type="date" id="ist-date" value="${new Date().toISOString().split('T')[0]}" oninput="convertSesTime()"></div>
     </div>
     <div id="session-conversions" class="grid-3"></div>
   </div>`;
-  updateClocks(); clockInterval = setInterval(updateClocks, 1000); convertSesTime();
+  updateClocks(ctxTz, ctxCity, ctxFlag);
+  clockInterval = setInterval(()=>updateClocks(ctxTz,ctxCity,ctxFlag), 1000);
+  convertSesTime();
 }
-function updateClocks() {
-  const el = document.getElementById('clocks'); if (!el) { clearInterval(clockInterval); return; }
+
+function bigClockHtml(tz, city, flag, highlight) {
   const now = new Date();
+  const t = now.toLocaleTimeString('en-US',{timeZone:tz,hour:'2-digit',minute:'2-digit',second:'2-digit',hour12:false});
+  const d = now.toLocaleDateString('en-IN',{timeZone:tz,weekday:'long',day:'numeric',month:'long'});
+  const h = parseInt(t);
+  const isDay = h>=6&&h<22;
+  return `<div style="background:${highlight?'linear-gradient(135deg,rgba(59,130,246,.08),rgba(59,130,246,.02))':'var(--surface2)'};border:1px solid ${highlight?'rgba(59,130,246,.3)':'var(--border)'};border-radius:var(--r);padding:20px;text-align:center">
+    <div style="font-size:20px;margin-bottom:6px">${flag} ${isDay?'☀️':'🌙'}</div>
+    <div style="font-size:40px;font-weight:300;font-family:var(--mono);letter-spacing:.04em">${t}</div>
+    <div style="font-size:13px;font-weight:500;margin-top:6px">${city}</div>
+    <div style="font-size:11px;color:var(--text3);font-family:var(--mono);margin-top:2px">${d}</div>
+  </div>`;
+}
+
+function updateClocks(ctxTz, ctxCity, ctxFlag) {
+  const heroEl = document.getElementById('clock-hero');
+  const el = document.getElementById('clocks');
+  if (!heroEl||!el) { clearInterval(clockInterval); return; }
+  const now = new Date();
+
+  // Hero: IST + active trip destination
+  let heroHtml = `<div class="grid-2">`;
+  heroHtml += bigClockHtml('Asia/Kolkata','India (IST)','🇮🇳',false);
+  if (ctxTz && ctxTz !== 'Asia/Kolkata') {
+    heroHtml += bigClockHtml(ctxTz, ctxCity, ctxFlag, true);
+  } else {
+    // Show Malaysia as default if no active trip
+    heroHtml += bigClockHtml('Asia/Kuala_Lumpur','Malaysia','🇲🇾',false);
+  }
+  heroHtml += '</div>';
+  heroEl.innerHTML = heroHtml;
+
+  // All zones grid
   el.innerHTML = TIMEZONES.map(tz=>{
     const t = now.toLocaleTimeString('en-US',{timeZone:tz.tz,hour:'2-digit',minute:'2-digit',second:'2-digit',hour12:false});
     const d = now.toLocaleDateString('en-IN',{timeZone:tz.tz,weekday:'short',day:'numeric',month:'short'});
@@ -1088,6 +1437,7 @@ function updateClocks() {
     return `<div class="clock-item"><div style="font-size:18px;margin-bottom:3px">${tz.flag} ${h>=6&&h<22?'☀️':'🌙'}</div><div class="clock-time">${t}</div><div class="clock-city">${tz.city}</div><div class="clock-date">${d}</div></div>`;
   }).join('');
 }
+
 function convertSesTime() {
   const time = document.getElementById('ist-input')?.value, date = document.getElementById('ist-date')?.value;
   if (!time||!date) return;
@@ -1099,7 +1449,6 @@ function convertSesTime() {
     return `<div class="card-sm"><div style="font-size:10px;color:var(--text3);font-family:var(--mono)">${tz.flag} ${tz.city}</div><div style="font-size:20px;font-weight:300;font-family:var(--mono);margin-top:3px">${cv}</div><div style="font-size:10px;color:var(--text3);font-family:var(--mono)">${cd}</div></div>`;
   }).join('');
 }
-
 // ─── Visas ────────────────────────────────────────────────
 function renderVisas() {
   const visas = appData.visas||[];
