@@ -1242,85 +1242,134 @@ async function getAiFlightInfo(num, from, to, airline, duration, triggerBtn) {
   if (triggerBtn) { triggerBtn.disabled = false; triggerBtn.textContent = '🤖 Airport Guide & Flight Tips'; }
 }
 
-function formatAiFlightGuide(text, from, to) {
-  // Split into sections by numbered headers or markdown ##
+function formatAiFlightGuide(rawText, from, to) {
+  // Strip citation markers like [1] [2] [3][4] that search models inject
+  const text = rawText.replace(/\[\d+\]/g, '').replace(/\s{2,}/g, ' ').trim();
+
   const lines = text.split('\n');
   let html = '';
-  let inSection = false;
-  let sectionContent = [];
+
+  // Current section state
   let sectionTitle = '';
+  let sectionBody  = [];
+  let currentH2    = '';  // airport context (## BLR or ## KUL or ## THE FLIGHT)
 
   const sectionIcons = {
-    'AIRPORT OVERVIEW':'🏢', 'SMOKING':'🚬', 'FOOD':'🍽️', 'RESTAURANT':'🍽️',
-    'LOUNGE':'🛋️', 'THINGS TO DO':'🎯', 'ACTIVITIES':'🎯', 'LAYOVER':'⏱️',
-    'FLIGHT DURATION':'✈️', 'IN-FLIGHT':'✈️', 'PRACTICAL':'💡', 'TIPS':'💡',
+    'TERMINAL':        '🏢',
+    'CHECK-IN':        '🏢',
+    'ARRIVAL':         '🏢',
+    'OVERVIEW':        '🏢',
+    'SMOKING':         '🚬',
+    'FOOD':            '🍽️',
+    'RESTAURANT':      '🍽️',
+    'LOUNGE':          '🛋️',
+    'THINGS TO DO':    '🎯',
+    'ACTIVITIES':      '🎯',
+    'LAYOVER':         '⏱️',
+    'DURATION':        '✈️',
+    'AIRCRAFT':        '✈️',
+    'IN-FLIGHT':       '🎬',
+    'ENTERTAINMENT':   '🎬',
+    'SEAT':            '💺',
+    'PRACTICAL':       '💡',
+    'TIPS':            '💡',
+    'TRANSPORT':       '🚌',
   };
 
   function getIcon(title) {
     const up = title.toUpperCase();
-    for (const [k,v] of Object.entries(sectionIcons)) { if (up.includes(k)) return v; }
+    for (const [k, v] of Object.entries(sectionIcons)) {
+      if (up.includes(k)) return v;
+    }
     return '📌';
+  }
+
+  function processLine(line) {
+    // Bold **text**
+    line = line.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+    // Italic *text*
+    line = line.replace(/\*(.+?)\*/g, '<em>$1</em>');
+    return line;
   }
 
   function flushSection() {
     if (!sectionTitle) return;
+    const body = sectionBody.join('\n').trim();
+    if (!body) { sectionTitle = ''; sectionBody = []; return; }
     const icon = getIcon(sectionTitle);
-    const bodyText = sectionContent.join('\n').trim();
-    if (!bodyText) return;
-    // Convert bullet lines
-    const bodyHtml = bodyText.split('\n').map(line=>{
+
+    const bodyLines = body.split('\n');
+    let bodyHtml = '';
+    for (let line of bodyLines) {
       line = line.trim();
-      if (!line) return '<div style="height:4px"></div>';
-      if (line.startsWith('- ') || line.startsWith('• ') || line.startsWith('* '))
-        return `<div style="display:flex;gap:6px;margin-bottom:3px"><span style="color:var(--accent2);flex-shrink:0">·</span><span>${line.slice(2)}</span></div>`;
-      // Bold **text**
-      line = line.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
-      return `<div style="margin-bottom:3px">${line}</div>`;
-    }).join('');
-    html += `
-    <div style="margin-bottom:12px">
-      <div style="font-size:10px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--accent2);margin-bottom:6px;display:flex;align-items:center;gap:6px">
-        <span>${icon}</span><span>${sectionTitle}</span>
+      if (!line) { bodyHtml += '<div style="height:5px"></div>'; continue; }
+      // Bullet points
+      if (/^[-•*]\s/.test(line)) {
+        bodyHtml += `<div style="display:flex;gap:7px;margin-bottom:4px;line-height:1.5">
+          <span style="color:var(--accent2);flex-shrink:0;margin-top:1px">·</span>
+          <span>${processLine(line.slice(2))}</span>
+        </div>`;
+      } else {
+        bodyHtml += `<div style="margin-bottom:4px;line-height:1.5">${processLine(line)}</div>`;
+      }
+    }
+
+    html += `<div style="margin-bottom:14px;padding-bottom:14px;border-bottom:1px solid var(--border)">
+      <div style="display:flex;align-items:center;gap:7px;margin-bottom:7px">
+        <span style="font-size:14px">${icon}</span>
+        <span style="font-size:10px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--accent2)">${sectionTitle}</span>
       </div>
-      <div style="font-size:12px;color:var(--text2);font-family:var(--mono);line-height:1.6;padding-left:4px">${bodyHtml}</div>
+      <div style="font-size:12px;color:var(--text2);font-family:var(--mono);padding-left:2px">${bodyHtml}</div>
     </div>`;
-    sectionContent = [];
     sectionTitle = '';
+    sectionBody  = [];
   }
 
-  // Airport tabs
-  let currentAirport = null;
-  const fromSections = [];
-  const toSections = [];
-  let flightSections = [];
-  let currentGroup = null; // 'from','to','flight'
+  function flushH2() {
+    if (!currentH2) return '';
+    const label = currentH2;
+    currentH2 = '';
+    return label;
+  }
 
-  for (const line of lines) {
-    const trimmed = line.trim();
-    if (!trimmed) { sectionContent.push(''); continue; }
+  let currentSection = '';
 
-    // Detect airport context switches
-    if (trimmed.toUpperCase().includes(from.toUpperCase()) && (trimmed.startsWith('#') || /^\d+\./.test(trimmed) || trimmed.includes('AIRPORT'))) {
+  for (const raw of lines) {
+    const line = raw.trim();
+    if (!line) { sectionBody.push(''); continue; }
+
+    // H2 airport headers: ## BLR — name  or  ## THE FLIGHT
+    if (/^##\s/.test(line) && !/^###/.test(line)) {
       flushSection();
-      if (currentGroup !== 'from') { currentGroup = 'from'; }
-    } else if (trimmed.toUpperCase().includes(to.toUpperCase()) && (trimmed.startsWith('#') || /^\d+\./.test(trimmed) || trimmed.includes('AIRPORT'))) {
-      flushSection();
-      if (currentGroup !== 'to') { currentGroup = 'to'; }
+      const label = line.replace(/^##\s+/, '');
+      // Emit an airport header divider
+      html += `<div style="font-size:13px;font-weight:500;color:var(--text);margin:16px 0 10px;padding:10px 12px;background:var(--surface2);border-radius:8px;border-left:3px solid var(--accent)">
+        ${label.includes(from) ? '🛫' : label.includes(to) ? '🛬' : '✈️'} ${label}
+      </div>`;
+      continue;
     }
 
-    // Detect section headers: ## Title, ### Title, 1. TITLE, **TITLE**
-    const isHeader = trimmed.startsWith('#') || /^\d+\.\s+[A-Z]/.test(trimmed) || /^\*\*[A-Z\s&]+\*\*$/.test(trimmed);
-    if (isHeader) {
+    // H3 section headers: ### SMOKING ROOMS
+    if (/^###\s/.test(line)) {
       flushSection();
-      sectionTitle = trimmed.replace(/^#+\s*/, '').replace(/^\d+\.\s*/, '').replace(/\*\*/g, '').trim();
-    } else {
-      sectionContent.push(trimmed);
+      sectionTitle = line.replace(/^###\s+/, '').trim();
+      continue;
     }
+
+    // Numbered section headers: ## 1) SMOKING  or  1. SMOKING
+    if (/^\d+[.)]\s+[A-Z]/.test(line) && line.length < 60) {
+      flushSection();
+      sectionTitle = line.replace(/^\d+[.)]\s+/, '').trim();
+      continue;
+    }
+
+    sectionBody.push(line);
   }
   flushSection();
 
-  return `<div style="background:var(--surface2);border:1px solid var(--border);border-radius:var(--r);padding:16px">${html||'<div style="color:var(--text3);font-size:12px;font-family:var(--mono)">'+text+'</div>'}</div>`;
+  return `<div style="background:var(--surface2);border:1px solid var(--border);border-radius:var(--r);padding:16px 18px">${html}</div>`;
 }
+
 // ─── Currency ─────────────────────────────────────────────
 function renderCurrency() {
   document.getElementById('page-container').innerHTML = `
