@@ -389,6 +389,31 @@ let clockInterval = null;
 let pinBuffer = '';
 let pinLocked = false;
 let exchangeRates = null;
+let frozenRates = null;      // today's rates, fetched once per session
+let frozenRatesDate = null;  // date string when rates were fetched
+
+async function ensureFrozenRates() {
+  if (frozenRates) return frozenRates;
+  try {
+    const res = await apiRates();
+    if (res.ok) {
+      frozenRates = res.rates;
+      frozenRatesDate = new Date().toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'});
+      exchangeRates = res.rates;
+    }
+  } catch(e) {}
+  return frozenRates;
+}
+
+// Convert any amount in fromCur to INR using frozenRates
+function toINR(amount, fromCur) {
+  if (!frozenRates) return null;
+  const amt = parseFloat(amount) || 0;
+  if (!fromCur || fromCur === 'INR') return amt;
+  const rate = frozenRates[fromCur]; // rate = how much fromCur per 1 INR
+  if (!rate) return null;
+  return amt / rate;
+}
 
 // Resolve GAS URL: config.js first, localStorage fallback
 function getGasUrl() {
@@ -575,7 +600,7 @@ function tripStatusBadge(s) {
   if (s==='upcoming') return '<span class="badge badge-blue">Upcoming</span>';
   return '<span class="badge badge-gray">Past</span>';
 }
-const catEmoji = {food:'🍜',culture:'🎭',nature:'🌿',entertainment:'🎡',shopping:'🛍',history:'🏛',hotel:'🏨',transport:'🚕',laundry:'👔',misc:'📦',other:'📦'};
+const catEmoji = {food:'🍜',culture:'🎭',nature:'🌿',entertainment:'🎡',shopping:'🛍',history:'🏛',hotel:'🏨',transport:'🚕',laundry:'👔',alcohol:'🍷',cigarettes:'🚬',misc:'📦',other:'📦'};
 
 function closeSidebar() { document.getElementById('sidebar').classList.remove('open'); document.getElementById('sidebar-overlay').classList.remove('show'); }
 function toggleSidebar() { document.getElementById('sidebar').classList.toggle('open'); document.getElementById('sidebar-overlay').classList.toggle('show'); }
@@ -721,29 +746,67 @@ function renderTripDetail(id) {
   renderTripDetailContent(t, document.getElementById('page-container'));
 }
 
-function renderTripDetailContent(t, container) {
+async function renderTripDetailContent(t, container) {
+  // Show a quick skeleton while rates load
+  container.innerHTML = `<div class="loading"><div class="spinner"></div> Loading...</div>`;
+  await ensureFrozenRates();
+
   const nights = (t.hotels||[]).reduce((a,h)=>a+(h.nights||0),0);
-  const totalExp = (t.expenses||[]).reduce((a,e)=>a+(parseFloat(e.amount)||0),0);
-  const taExp = (t.expenses||[]).filter(e=>e.isTA).reduce((a,e)=>a+(parseFloat(e.amount)||0),0);
+  const exps = t.expenses||[];
   const s = tripStatus(t);
+
+  // Total expenses in local currency (destination currency)
+  const localCur = t.destination?.currency || 'INR';
+  const localTotal = exps.filter(e=>(e.currency||'INR')===localCur).reduce((a,e)=>a+(parseFloat(e.amount)||0),0);
+
+  // Total all expenses in INR
+  let totalExpINR = 0;
+  exps.forEach(e => {
+    const inr = toINR(e.amount, e.currency||'INR');
+    if (inr !== null) totalExpINR += inr;
+  });
 
   let daHtml = '';
   if (t.da && (t.da.intlRateUSD || t.da.indiaRateINR)) {
     const days = daysBetween(t.startDate, t.endDate);
-    const rate = t.type==='international' ? t.da.intlRateUSD : t.da.indiaRateINR;
-    const sym = t.type==='international' ? '$' : '₹';
+    const isIntl = t.type === 'international';
+    const rate = isIntl ? t.da.intlRateUSD : t.da.indiaRateINR;
+    const sym = isIntl ? '$' : '₹';
     const total = days * rate;
+
+    // DA in INR (for international trips, convert USD → INR)
+    let daINRHtml = '';
+    if (isIntl && frozenRates) {
+      const usdRate = frozenRates['USD'];
+      if (usdRate) {
+        const totalINR = total / usdRate;
+        daINRHtml = `<div style="font-size:13px;color:var(--text2);font-family:var(--mono);margin-top:2px">≈ ₹${totalINR.toFixed(2)}</div>`;
+      }
+    }
+
+    // TA spent — sum each TA expense converted to INR
+    let taINR = 0;
+    exps.filter(e=>e.isTA).forEach(e=>{
+      const inr = toINR(e.amount, e.currency||'INR');
+      if (inr !== null) taINR += inr;
+    });
+
+    const rateNote = frozenRatesDate ? `<div style="font-size:9px;color:var(--text3);font-family:var(--mono);margin-top:3px">rate as of ${frozenRatesDate}</div>` : '';
+
     daHtml = `<div class="da-tracker" style="margin-bottom:14px">
-      <div style="display:flex;justify-content:space-between;align-items:flex-start">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:10px">
         <div>
           <div class="section-title" style="margin-bottom:4px">Daily Allowance</div>
-          <div class="da-big">${sym}${total.toLocaleString()}</div>
+          <div class="da-big">${sym}${total.toLocaleString()} ${isIntl?'USD':''}</div>
+          ${daINRHtml}
           <div style="font-size:11px;color:var(--text2);font-family:var(--mono);margin-top:3px">${days} days × ${sym}${rate}/day</div>
+          ${rateNote}
         </div>
         <div style="text-align:right">
           <div class="section-title" style="margin-bottom:4px">TA Spent</div>
-          <div style="font-size:20px;font-weight:400;color:var(--amber);font-family:var(--mono)">₹${taExp.toLocaleString()}</div>
-          <div style="font-size:10px;color:var(--text3);font-family:var(--mono)">reimbursable</div>
+          <div style="font-size:20px;font-weight:400;color:var(--amber);font-family:var(--mono)">₹${taINR.toFixed(2)}</div>
+          <div style="font-size:10px;color:var(--text3);font-family:var(--mono)">reimbursable · in INR</div>
+          ${rateNote}
         </div>
       </div>
     </div>`;
@@ -760,7 +823,7 @@ function renderTripDetailContent(t, container) {
     <div class="stat-tile"><div class="stat-label">Duration</div><div class="stat-value">${daysBetween(t.startDate,t.endDate)}</div><div class="stat-sub">days</div></div>
     <div class="stat-tile"><div class="stat-label">Flights</div><div class="stat-value">${(t.flights||[]).length}</div><div class="stat-sub">segments</div></div>
     <div class="stat-tile"><div class="stat-label">Nights</div><div class="stat-value">${nights}</div><div class="stat-sub">hotel</div></div>
-    <div class="stat-tile"><div class="stat-label">Expenses</div><div class="stat-value">${(t.expenses||[]).length}</div><div class="stat-sub">₹${Math.round(totalExp).toLocaleString()}</div></div>
+    <div class="stat-tile"><div class="stat-label">Expenses</div><div class="stat-value">${exps.length}</div><div class="stat-sub">${localCur!=='INR'?localCur+' '+localTotal.toFixed(2)+' · ':''} ₹${totalExpINR.toFixed(2)}</div></div>
   </div>
   ${daHtml}
   ${renderFlightsList(t)}${renderHotelsList(t)}${renderSessionsList(t)}${renderExpensesList(t)}${renderPlacesList(t)}${renderInsurance(t)}`;
@@ -903,17 +966,89 @@ function renderSessionsList(t) {
 }
 function renderExpensesList(t) {
   const exps = t.expenses||[];
+  const localCur = t.destination?.currency || 'INR';
+
+  // Compute totals
+  let localTotal = 0, grandINR = 0, taINR = 0;
+  exps.forEach(e => {
+    const cur = e.currency || 'INR';
+    const amt = parseFloat(e.amount) || 0;
+    if (cur === localCur) localTotal += amt;
+    const inr = toINR(amt, cur);
+    if (inr !== null) {
+      grandINR += inr;
+      if (e.isTA) taINR += inr;
+    }
+  });
+
+  const payIcon = {card:'💳',cash:'💵',upi:'📱','bank transfer':'🏦'};
+  const rateNote = frozenRatesDate ? `<span style="font-size:9px;color:var(--text3);font-family:var(--mono);margin-left:6px">rate as of ${frozenRatesDate}</span>` : '';
+
+  const sorted = exps.slice().sort((a,b)=>(a.date||'').localeCompare(b.date||''));
+
+  const tableRows = sorted.map((e,i)=>{
+    const cur = e.currency||'INR';
+    const amt = parseFloat(e.amount)||0;
+    const inr = toINR(amt, cur);
+    const inrStr = inr !== null ? `<div style="font-size:10px;color:var(--text3);font-family:var(--mono)">₹${inr.toFixed(2)}</div>` : '';
+    const pmIcon = payIcon[(e.paymentMethod||'').toLowerCase()] || '';
+    const dateFmt = e.date ? new Date(e.date+'T00:00').toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'}).replace(/ /g,'-') : '—';
+    return `<tr>
+      <td style="font-family:var(--mono);white-space:nowrap">${dateFmt}</td>
+      <td>
+        <div style="font-size:13px">${e.description||e.category}</div>
+        <div style="font-size:10px;color:var(--text3);font-family:var(--mono)">${catEmoji[e.category]||'📦'} ${e.category||''}${e.paymentMethod?` · ${pmIcon} ${e.paymentMethod}`:''}</div>
+      </td>
+      <td style="text-align:right">
+        <div style="font-family:var(--mono)">${cur} ${amt.toFixed(2)}</div>
+        ${cur!=='INR'?inrStr:''}
+      </td>
+      <td style="text-align:center">${e.isTA?'<span class="badge badge-green" style="font-size:8px">TA</span>':''}</td>
+      <td style="text-align:right">
+        <button class="btn btn-secondary btn-sm" style="font-size:10px;padding:3px 8px" onclick="showEditExpense('${t.id}','${e.id||i}')">Edit</button>
+      </td>
+    </tr>`;
+  }).join('');
+
+  const totalsRow = sorted.length ? `
+    <tfoot>
+      <tr style="border-top:2px solid var(--border2)">
+        <td colspan="2" style="font-size:11px;font-weight:500;color:var(--text2);padding:10px 12px">
+          Total · ${exps.length} expense${exps.length!==1?'s':''}
+        </td>
+        <td style="text-align:right;padding:10px 12px">
+          ${localCur!=='INR'?`<div style="font-family:var(--mono);font-size:13px;font-weight:500">${localCur} ${localTotal.toFixed(2)}</div>`:''}
+          <div style="font-family:var(--mono);font-size:13px;font-weight:500;color:var(--accent2)">₹${grandINR.toFixed(2)}</div>
+          ${rateNote}
+        </td>
+        <td colspan="2" style="text-align:right;padding:10px 12px">
+          ${taINR>0?`<div style="font-size:11px;color:var(--green);font-family:var(--mono)">TA: ₹${taINR.toFixed(2)}</div>`:''}
+        </td>
+      </tr>
+    </tfoot>` : '';
+
   return `<div class="sub-section">
-    <div class="sub-section-header" onclick="toggleSection(this)">💸 Expenses (${exps.length}) <span>▾</span></div>
-    <div class="sub-section-body">
-      ${exps.map(e=>`<div class="expense-item">
-        <div class="expense-cat">${catEmoji[e.category]||'📦'}</div>
-        <div><div class="expense-desc">${e.description||e.category}</div><div class="expense-meta">${e.date||''} · ${e.category||''}</div></div>
-        <div><div class="expense-amt">${e.currency||'INR'} ${parseFloat(e.amount||0).toLocaleString()}</div>${e.isTA?'<div class="expense-ta">✓ TA</div>':''}</div>
-      </div>`).join('')}
-      <div style="display:flex;gap:8px;margin-top:8px;flex-wrap:wrap">
-        <button class="btn btn-secondary btn-sm" onclick="showAddExpense('${t.id}')">+ Add</button>
-        ${exps.length?`<button class="btn btn-secondary btn-sm" onclick="getAiExpenseAdvice('${t.id}')">🤖 AI Advice</button>`:''}
+    <div class="sub-section-header" onclick="toggleSection(this)">💸 Expenses (${sorted.length}) <span>▾</span></div>
+    <div class="sub-section-body" style="padding:0">
+      ${sorted.length ? `
+      <div style="overflow-x:auto">
+        <table class="data-table" style="width:100%">
+          <thead>
+            <tr>
+              <th>Date</th>
+              <th>Description</th>
+              <th style="text-align:right">Amount</th>
+              <th style="text-align:center">TA</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>${tableRows}</tbody>
+          ${totalsRow}
+        </table>
+      </div>` : '<div style="color:var(--text3);font-size:12px;padding:14px">No expenses added yet</div>'}
+      <div style="display:flex;gap:8px;padding:12px 14px;flex-wrap:wrap;border-top:${sorted.length?'1px solid var(--border)':'none'}">
+        <button class="btn btn-secondary btn-sm" onclick="showAddExpense('${t.id}')">+ Add Expense</button>
+        ${sorted.length?`<button class="btn btn-secondary btn-sm" onclick="getAiExpenseAdvice('${t.id}')">🤖 AI Advice</button>`:''}
       </div>
     </div>
   </div>`;
@@ -1501,6 +1636,7 @@ function renderAllExpenses() {
   allExp.sort((a,b)=>new Date(b.date)-new Date(a.date));
   const total = allExp.reduce((s,e)=>s+(parseFloat(e.amount)||0),0);
   const ta = allExp.filter(e=>e.isTA).reduce((s,e)=>s+(parseFloat(e.amount)||0),0);
+  const payIcon = {card:'💳',cash:'💵',upi:'📱','bank transfer':'🏦'};
   document.getElementById('curr-tab-content').innerHTML = `
   <div style="display:flex;gap:12px;margin-bottom:14px;flex-wrap:wrap">
     <div class="stat-tile" style="flex:1;min-width:100px"><div class="stat-label">Total</div><div class="stat-value" style="font-size:22px">₹${Math.round(total).toLocaleString()}</div></div>
@@ -1510,8 +1646,8 @@ function renderAllExpenses() {
   <div class="card" style="overflow:hidden">
     ${allExp.map(e=>`<div class="expense-item">
       <div class="expense-cat">${catEmoji[e.category]||'📦'}</div>
-      <div><div class="expense-desc">${e.description||e.category}</div><div class="expense-meta">${e.date||''} · ${e.tripName||''}</div></div>
-      <div><div class="expense-amt">${e.currency||'INR'} ${parseFloat(e.amount||0).toLocaleString()}</div>${e.isTA?'<div class="expense-ta">✓ TA</div>':''}</div>
+      <div style="flex:1"><div class="expense-desc">${e.description||e.category}</div><div class="expense-meta">${e.date||''} · ${e.tripName||''}${e.paymentMethod?' · '+(payIcon[(e.paymentMethod||'').toLowerCase()]||'')+ ' '+e.paymentMethod:''}</div></div>
+      <div><div class="expense-amt">${e.currency||'INR'} ${parseFloat(e.amount||0).toFixed(2)}</div>${e.isTA?'<div class="expense-ta">✓ TA</div>':''}</div>
     </div>`).join('')}
     ${!allExp.length?'<div class="empty-state"><p>No expenses</p></div>':''}
   </div>`;
@@ -1952,30 +2088,67 @@ async function addHotel(tripId) {
   closeModal(); try { await apiSave(); navigate('tripDetail',tripId); } catch(e) { toast(e.message,'error'); }
 }
 
-// ─── Expense Modal ────────────────────────────────────────
-function showAddExpense(tripId) {
-  const trip=(appData.trips||[]).find(t=>t.id===tripId); const cur=trip?.destination?.currency||'INR';
+// ─── Expense Modal (Add + Edit) ───────────────────────────
+function showAddExpense(tripId) { showExpenseModal(tripId, null); }
+function showEditExpense(tripId, expId) {
+  const trip=(appData.trips||[]).find(t=>t.id===tripId); if(!trip) return;
+  const exp = (trip.expenses||[]).find(e=>e.id===expId) || (trip.expenses||[])[parseInt(expId)];
+  if (exp) showExpenseModal(tripId, exp);
+}
+
+function showExpenseModal(tripId, exp) {
+  const trip=(appData.trips||[]).find(t=>t.id===tripId); if(!trip) return;
+  const isEdit = !!exp;
+  const e = exp || {};
+  const cur = e.currency || trip.destination?.currency || 'INR';
+  const paymentOptions = ['Card','Cash','UPI','Bank Transfer'];
+
   showModal(`
-  <div class="modal-header"><h2>Add Expense</h2><button class="btn-icon" onclick="closeModal()">✕</button></div>
+  <div class="modal-header"><h2>${isEdit?'Edit Expense':'Add Expense'}</h2><button class="btn-icon" onclick="closeModal()">✕</button></div>
   <div class="modal-body">
     <div class="form-row">
-      <div class="form-group"><label>Date</label><input type="date" id="e-date" value="${new Date().toISOString().split('T')[0]}"></div>
-      <div class="form-group"><label>Category</label><select id="e-cat">${Object.keys(catEmoji).map(c=>`<option value="${c}">${catEmoji[c]} ${c}</option>`).join('')}</select></div>
+      <div class="form-group"><label>Date</label><input type="date" id="e-date" value="${e.date||new Date().toISOString().split('T')[0]}"></div>
+      <div class="form-group"><label>Category</label><select id="e-cat">${Object.keys(catEmoji).map(c=>`<option value="${c}" ${e.category===c?'selected':''}>${catEmoji[c]} ${c}</option>`).join('')}</select></div>
     </div>
-    <div class="form-group"><label>Description</label><input id="e-desc" placeholder="e.g. Lunch at KLCC"></div>
+    <div class="form-group"><label>Description</label><input id="e-desc" value="${e.description||''}" placeholder="e.g. Lunch at KLCC"></div>
     <div class="form-row">
-      <div class="form-group"><label>Amount</label><input type="number" id="e-amount"></div>
+      <div class="form-group"><label>Amount</label><input type="number" id="e-amount" value="${e.amount||''}"></div>
       <div class="form-group"><label>Currency</label><input id="e-currency" value="${cur}"></div>
     </div>
-    <label style="display:flex;align-items:center;gap:8px;cursor:pointer;text-transform:none;font-size:13px;color:var(--text2)"><input type="checkbox" id="e-ta" style="width:auto"> Travel Allowance (reimbursable)</label>
+    <div class="form-group"><label>Payment Method</label>
+      <select id="e-payment">
+        ${paymentOptions.map(p=>`<option value="${p}" ${(e.paymentMethod||'Card')===p?'selected':''}>${p}</option>`).join('')}
+      </select>
+    </div>
+    <label style="display:flex;align-items:center;gap:8px;cursor:pointer;text-transform:none;font-size:13px;color:var(--text2);margin-top:4px"><input type="checkbox" id="e-ta" style="width:auto" ${e.isTA?'checked':''}> Travel Allowance (reimbursable)</label>
   </div>
-  <div class="modal-footer"><button class="btn btn-secondary" onclick="closeModal()">Cancel</button><button class="btn btn-primary" onclick="addExpense('${tripId}')">Add</button></div>`);
+  <div class="modal-footer">
+    <button class="btn btn-secondary" onclick="closeModal()">Cancel</button>
+    <button class="btn btn-primary" onclick="saveExpense('${tripId}','${isEdit?e.id:''}')"> ${isEdit?'Save Changes':'Add'}</button>
+  </div>`);
 }
-async function addExpense(tripId) {
+
+async function saveExpense(tripId, expId) {
   const trip=(appData.trips||[]).find(t=>t.id===tripId); if(!trip) return;
   trip.expenses=trip.expenses||[];
-  trip.expenses.push({id:uuid(),date:document.getElementById('e-date').value,category:document.getElementById('e-cat').value,description:document.getElementById('e-desc').value.trim(),amount:parseFloat(document.getElementById('e-amount').value)||0,currency:document.getElementById('e-currency').value.trim().toUpperCase()||'INR',isTA:document.getElementById('e-ta').checked});
-  closeModal(); try { await apiSave(); navigate('tripDetail',tripId); } catch(e) { toast(e.message,'error'); }
+  const payload = {
+    id: expId || uuid(),
+    date: document.getElementById('e-date').value,
+    category: document.getElementById('e-cat').value,
+    description: document.getElementById('e-desc').value.trim(),
+    amount: parseFloat(document.getElementById('e-amount').value)||0,
+    currency: document.getElementById('e-currency').value.trim().toUpperCase()||'INR',
+    paymentMethod: document.getElementById('e-payment').value,
+    isTA: document.getElementById('e-ta').checked,
+  };
+  if (expId) {
+    const idx = trip.expenses.findIndex(e=>e.id===expId);
+    if (idx!==-1) trip.expenses[idx]=payload; else trip.expenses.push(payload);
+  } else {
+    trip.expenses.push(payload);
+  }
+  closeModal();
+  try { await apiSave(); navigate('tripDetail',tripId); } catch(e) { toast(e.message,'error'); }
 }
 
 // ─── Place Modal ──────────────────────────────────────────
