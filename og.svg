@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630" role="img" aria-label="Trip Tracker">
+  <!-- Source for og.png. Fonts: Outfit, Inter, JetBrains Mono (self-hosted in web/assets/fonts). Re-render at 1200x630 after editing. -->
+  <defs>
+    <style>@font-face{font-family:'Outfit';font-weight:100 900;src:url('outfit-var.woff2') format('woff2');}@font-face{font-family:'Inter';font-weight:100 900;src:url('inter-var.woff2') format('woff2');}@font-face{font-family:'JetBrains Mono';font-weight:100 900;src:url('jetbrains-mono-var.woff2') format('woff2');}</style>
+    <linearGradient id="fg" x1="0" x2="1"><stop offset="0" stop-color="#fff" stop-opacity="0"/><stop offset="1" stop-color="#fff" stop-opacity="1"/></linearGradient>
+    <mask id="fade"><rect x="0" y="0" width="1200" height="630" fill="url(#fg)"/></mask>
+  </defs>
+  <rect width="1200" height="630" fill="#0a0c0f"/>
+  
+  <rect x="0" y="0" width="16" height="630" fill="#3b82f6"/>
+  <g class="illo" transform="translate(950,318) scale(0.92)">
+    <circle r="215" fill="#3b82f6" opacity="0.07"/><circle r="215" fill="none" stroke="#1e2530" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M-150,120 C-80,40 -40,160 40,80 C100,20 120,-40 160,-110" fill="none" stroke="#8b95a5" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="2 16"/>
+    <g transform="translate(-150,120)"><path d="M0,0 C-30,-40 -40,-60 -40,-80 A40,40 0 0 1 40,-80 C40,-60 30,-40 0,0 Z" fill="#3b82f6"/><circle cy="-80" r="14" fill="#0a0c0f"/></g>
+    <g transform="translate(160,-110)"><path d="M0,0 C-30,-40 -40,-60 -40,-80 A40,40 0 0 1 40,-80 C40,-60 30,-40 0,0 Z" fill="#0a0c0f" fill="none" stroke="#3b82f6" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/><circle cy="-80" r="12" fill="#3b82f6"/></g>
+  </g>
+  <text class="p" x="84" y="94" font-family="JetBrains Mono" font-weight="500" font-size="24" fill="#3b82f6">trip.sarathg.me</text>
+  <text class="h" x="84" y="324" font-family="Outfit" font-weight="800" font-size="88" letter-spacing="-0.02em" fill="#e8ecf0">Trip Tracker</text>
+  <text class="s" x="84" y="372" font-family="Inter" font-weight="400" font-size="26" fill="#8b95a5">A personal trip planning and expense tool.</text>
+  <text class="f" x="84" y="560" font-family="Inter" font-weight="600" font-size="24" fill="#e8ecf0">Sarath G</text>
+  <text class="f" x="212" y="560" font-family="Inter" font-weight="400" font-size="24" fill="#8b95a5">Cybersecurity consultant &amp; trainer</text>
+</svg>
